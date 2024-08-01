@@ -15,6 +15,8 @@ class Store(db.Model, SerializerMixin):
     clerks = db.relationship('User', back_populates='clerk_store', foreign_keys='User.store_id')
     products = db.relationship('Product', back_populates = 'store')
 
+    serialize_rules = ('-products.store', '-clerks.clerks_store', '-admin.admin_store' )
+
 
 class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
@@ -30,6 +32,8 @@ class User(db.Model, SerializerMixin):
     clerk_store = db.relationship('Store', back_populates='clerks', foreign_keys=[store_id])
     requests = db.relationship('Request', back_populates='user')
 
+    serialize_rules = ('-admin_store.admin', '-clerk_store.clerks', '-requests.user')
+
     @hybrid_property
     def password_hash(self):
         raise AttributeError('Password is not readable')
@@ -37,7 +41,12 @@ class User(db.Model, SerializerMixin):
     @password_hash.setter
     def password_hash(self, password):
         self._password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-        
+
+    def verify_password(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+    
+    
+
 
 
 class Product(db.Model, SerializerMixin):
@@ -54,6 +63,8 @@ class Product(db.Model, SerializerMixin):
 
     store = db.relationship('Store', back_populates = 'products')
 
+    serialize_rules = ('-store.products',)
+
 class Request(db.Model, SerializerMixin):
     __tablename__ = 'requests'
     id = db.Column(db.Integer, primary_key=True)
@@ -67,6 +78,7 @@ class Request(db.Model, SerializerMixin):
     admin = db.relationship('User', foreign_keys=[admin_id])
     product = db.relationship('Product', back_populates='requests')
 
+    serialize_rules = ('-user.requests', '-admin.requests', '-product.requests')
 
 
 
