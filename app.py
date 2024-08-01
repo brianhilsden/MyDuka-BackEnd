@@ -1,6 +1,6 @@
 from flask import Flask
 from config import app
-
+from models import User, Store, Product, Request
 
 
 
