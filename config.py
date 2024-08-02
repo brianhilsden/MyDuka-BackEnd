@@ -21,10 +21,11 @@ app.secret_key = os.getenv('SECRET_KEY')
 db = SQLAlchemy()
 
 migrate = Migrate(app, db)
+db.init_app(app)
 bcrypt = Bcrypt(app)
 api = Api(app)
 
-db.init_app(app)
+
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)

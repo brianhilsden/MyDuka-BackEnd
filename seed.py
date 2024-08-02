@@ -1,91 +1,57 @@
-#!/usr/bin/env python3
+from config import db, app
+from models import Store, Product, Request, User
+from sqlalchemy.exc import IntegrityError
 
-from random import randint, choice as rc
-from faker import Faker
+def seed_data():
+    with app.app_context():
+        # Clear existing data
+        db.session.query(Request).delete()
+        db.session.query(Product).delete()
+        db.session.query(Store).delete()
+        db.session.query(User).delete()
 
-from config import app, db
-from models import  Store, User, Product, Request
+        # Add Users
+        users = [
+            User(username="admin", email="admin@example.com", _password_hash="adminpassword", role="admin"),
+            User(username="clerk", email="clerk@example.com", _password_hash="clerkpassword", role="clerk"),
+            User(username="admin2", email="admin2@example.com", _password_hash="adminpassword2", role="admin"),
+        ]
+        db.session.add_all(users)
+        db.session.commit()
 
-fake = Faker()
+        # Add Stores
+        stores = [
+            Store(name="Store 1", location="Location 1", admin_id=users[0].id),
+            Store(name="Store 2", location="Location 2", admin_id=users[2].id)
+        ]
+        db.session.add_all(stores)
+        db.session.commit()
 
-with app.app_context():
+        # Update user store_id for clerks
+        users[1].store_id = stores[0].id
+        db.session.commit()
 
-    print("Deleting all records...")
-    Request.query.delete()
-    Product.query.delete()
-    User.query.delete()
-    Store.query.delete()
+        # Add Products
+        products = [
+            Product(brand_name="Brand A", product_name="Product 1", availability=True, payment_status="Paid", closing_stock=10, buying_price=100.0, selling_price=150.0, store_id=stores[0].id),
+            Product(brand_name="Brand B", product_name="Product 2", availability=False, payment_status="Unpaid", closing_stock=5, buying_price=200.0, selling_price=250.0, store_id=stores[1].id)
+        ]
+        db.session.add_all(products)
+        db.session.commit()
 
-    print("Creating stores...")
-    stores = []
-    for _ in range(5):
-        store = Store(
-            name=fake.company(),
-            location=fake.address()
-        )
-        stores.append(store)
+        # Add Requests
+        requests = [
+            Request(description="Request 1", product_id=products[0].id, clerk_id=users[1].id, admin_id=users[0].id),
+            Request(description="Request 2", product_id=products[1].id, clerk_id=users[1].id, admin_id=users[2].id)
+        ]
+        db.session.add_all(requests)
+        db.session.commit()
 
-    db.session.add_all(stores)
-    db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            print("There was an error seeding the database.")
 
-    print("Creating users...")
-    users = []
-    usernames = []
-    for _ in range(20):
-        username = fake.first_name()
-        while username in usernames:
-            username = fake.first_name()
-        usernames.append(username)
-
-        user = User(
-            username=username,
-            email=fake.email(),
-            role=rc(['admin', 'clerk']),
-            store_id=rc([store.id for store in stores])
-        )
-        user.password_hash = user.username + 'password'
-        users.append(user)
-
-    db.session.add_all(users)
-    db.session.commit()
-
-    print("Assigning store admins...")
-    for store in stores:
-        admin = rc([user for user in users if user.role == 'admin'])
-        store.admin_id = admin.id
-
-    db.session.add_all(stores)
-    db.session.commit()
-
-    print("Creating products...")
-    products = []
-    for _ in range(50):
-        product = Product(
-            brand_name=fake.company(),
-            product_name=fake.word(),
-            payment_status=rc(['paid', 'unpaid']),
-            closing_stock=randint(1, 100),
-            buying_price=round(fake.random_number(digits=5), 2),
-            selling_price=round(fake.random_number(digits=5), 2),
-            store_id=rc([store.id for store in stores])
-        )
-        products.append(product)
-
-    db.session.add_all(products)
-    db.session.commit()
-
-    print("Creating requests...")
-    requests = []
-    for _ in range(100):
-        request = Request(
-            description=fake.sentence(),
-            product_id=rc([product.id for product in products]),
-            clerk_id=rc([user.id for user in users if user.role == 'clerk']),
-            admin_id=rc([user.id for user in users if user.role == 'admin'])
-        )
-        requests.append(request)
-
-    db.session.add_all(requests)
-    db.session.commit()
-
-    print("Complete.")
+if __name__ == "__main__":
+    seed_data()
