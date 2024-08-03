@@ -87,25 +87,28 @@ api.add_resource(CheckSession,'/check_session',endpoint="check_session")
 
 
 
-class GetItem(Resource):
+class GetSpecificStoreProducts(Resource):
     def get(self,store_id):
         products = Product.query.filter_by(store_id=store_id).all()
         response = make_response([product.to_dict() for product in products],200)
         return response
     
-api.add_resource(GetItem,"/getItemssale/<int:store_id>")
+api.add_resource(GetSpecificStoreProducts,"/getProducts/<int:store_id>")
+
+
 
 class Sales(Resource):
-    def get(self):
-        sales = SalesReport.query.all()
+    def get(self,store_id):
+        sales = SalesReport.query.filter_by(store_id=store_id).all()
         response = make_response({"sales":[sale.to_dict() for sale in sales]},200)
         return response
     
-    def post(self):
+    def post(self,store_id):
         data = request.get_json()
         date = data.get("date")
         item = data.get("product_name")
         quantity = data.get("quantity")
+        total_price = data.get("total_price")
 
         product = Product.query.filter_by(product_name = item).first()
         print(item)
@@ -119,6 +122,7 @@ class Sales(Resource):
                         product_id = product.id,
                         quantity_sold = quantity,
                         quantity_in_hand = product.closing_stock - quantity,
+                        store_id = store_id,
                         profit = (product.selling_price * quantity) - (product.buying_price * quantity)
                     )
                     product.closing_stock -= quantity
@@ -136,7 +140,9 @@ class Sales(Resource):
             return make_response({"error":"Product not found"},404)
         
 
-api.add_resource(Sales,"/sales")
+api.add_resource(Sales,"/sales/<int:store_id>")
+
+
 
 """To be reviewed"""
 class Requests(Resource):
