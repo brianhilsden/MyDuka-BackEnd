@@ -63,7 +63,7 @@ class User(db.Model, SerializerMixin):
     clerk_store = db.relationship('Store', back_populates='clerks', foreign_keys=[store_id])
     requests = db.relationship('Request', foreign_keys=[Request.clerk_id], back_populates='user', lazy=True)
 
-    serialize_rules = ('-admin_store.admin', '-clerk_store.clerks', '-requests.user')
+    serialize_rules = ('-admin_store.admin', '-clerk_store', '-requests')
 
     @hybrid_property
     def password_hash(self):

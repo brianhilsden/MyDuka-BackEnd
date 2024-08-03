@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv
+load_dotenv()
 import os
 from flask_migrate import Migrate
 from flask import Flask
@@ -14,8 +14,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 app = Flask(__name__)
 CORS(app)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY') 
 db = SQLAlchemy()
