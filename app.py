@@ -143,9 +143,34 @@ class Requests(Resource):
         response = make_response([requestedItem.to_dict() for requestedItem in requests],200)
         return response
     
-    def post(self):
-        pass
+    def post(self,store_id):
+        data = request.get_json()
+        product = Product.query.filter_by(product_name= data.get("product_name")).first()
+        quantity = data.get("stock")
+        clerk_id = data.get("clerk_id")
+        price = data.get("product_price")
+        category = data.get("category")
 
+        store= Store.query.filter_by(id=store_id).first()
+        admin_id = store.admin_id
+        if product:
+            product_id = product.id
+            
+            newRequest = Request(
+                quantity = quantity,
+                product_id = product_id,
+                clerk_id = clerk_id,
+                admin_id = admin_id,
+                store_id = store_id
+            )
+            db.session.add(newRequest)
+            db.session.commit()
+            response = make_response(newRequest.to_dict(),201)
+            return response
+
+        else:
+            return make_response({"error":"The product does not exist"},404)
+      
 
     
 api.add_resource(Requests,"/request/<int:store_id>")
