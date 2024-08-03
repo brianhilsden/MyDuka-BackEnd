@@ -15,8 +15,9 @@ class Store(db.Model, SerializerMixin):
     clerks = db.relationship('User', back_populates='clerk_store', foreign_keys='User.store_id')
     products = db.relationship('Product', back_populates='store')
     requests = db.relationship("Request",back_populates = "store")
+    salesReports = db.relationship("SalesReport",back_populates="store")
 
-    serialize_rules = ('-products.store', '-clerks.clerk_store', '-admin.admin_store',"-requests.store")
+    serialize_rules = ('-products.store', '-clerks.clerk_store', '-admin.admin_store',"-requests.store","-salesReports")
 
 class Product(db.Model, SerializerMixin):
     __tablename__ = 'products'
@@ -63,6 +64,7 @@ class User(db.Model, SerializerMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String)
     email = db.Column(db.String, unique=True, nullable=False)
     _password_hash = db.Column(db.String, nullable=False)
     role = db.Column(db.String, nullable=False)
@@ -93,10 +95,12 @@ class SalesReport(db.Model,SerializerMixin):
     date = db.Column(db.DateTime, default=datetime.now)
     product_name = db.Column(db.String)
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"))
+    store_id = db.Column(db.Integer, db.ForeignKey("stores.id"))
     quantity_sold = db.Column(db.Integer)
     quantity_in_hand = db.Column(db.Integer)
     profit = db.Column(db.Integer)
 
     product = db.relationship("Product",back_populates="salesReport")
+    store = db.relationship("Store",back_populates="salesReports")
 
-    serialize_rules = ("-product",)
+    serialize_rules = ("-product","-store")
