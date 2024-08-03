@@ -1,0 +1,67 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "MyDuka E-commerce API",
+      "description": "API for managing products and user authentication in MyDuka e-commerce platform",
+      "version": "1.0.0"
+    },
+    "servers": [
+        {
+          "url": "http://127.0.0.1:5555/",
+          "description": "Development server"
+        }
+      ],
+      "paths":{
+        "/user/login":{
+            "post":{
+                "summary": "User login",
+                "description": "Logs a user into the system",
+                "operationId": "loginUser",
+                "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "The user name for login",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },{
+            "name": "password",
+            "in": "query",
+            "description": "The password for login in clear text",
+            "required": true,
+            "schema": {
+            "type": "string"
+            }
+
+          }],
+          "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }},
+          "400": {
+            "description": "Invalid username/password supplied"
+          }
+        }
+
+
+            }
+            
+        }
+
+      }
+      
+
+    }
