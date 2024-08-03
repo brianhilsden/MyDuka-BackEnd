@@ -182,7 +182,7 @@ class Requests(Resource):
       
 
     
-api.add_resource(Requests,"/request/<int:store_id>")
+api.add_resource(Requests,"/requests/<int:store_id>")
 
 
 
