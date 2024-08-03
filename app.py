@@ -24,11 +24,12 @@ def user_lookup_callback(_jwt_header, jwt_data):
 class SignUp(Resource):
     def post(self):
         data = request.get_json()
-        name = data.get("name")
+        name = data.get("full_name")
         email = data.get("email")
         role = data.get("role")
         store_id = data.get("store_id")
         password = data.get("password")
+        phone_number = data.get("phone_number")
 
         user = User.query.filter_by(email=email).first()
 
@@ -38,7 +39,8 @@ class SignUp(Resource):
                     username = name,
                     email = email,
                     role = role,
-                    store_id = store_id
+                    store_id = store_id,
+                    phone_number = phone_number
 
                 )
                 user.password_hash = password
@@ -63,6 +65,7 @@ class Login(Resource):
         data = request.get_json()
         user = User.query.filter_by(email = data.get("email")).first()
         if user:
+            username = data.get("full_name")
             if user.verify_password(data.get("password")):
                 access_token = create_access_token(identity=user)
                 response = make_response({"user":user.to_dict(),"access_token":access_token},201)
