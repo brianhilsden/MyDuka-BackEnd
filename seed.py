@@ -70,8 +70,8 @@ def seed_data():
         db.session.commit()
 
         # Create Requests
-        request1 = Request(description="Request 1", product_id=product1.id, clerk_id=clerk1.id, admin_id=admin1.id,store_id=store1.id)
-        request2 = Request(description="Request 2", product_id=product2.id, clerk_id=clerk1.id, admin_id=admin2.id,store_id=store2.id)
+        request1 = Request(description="Request 1", product_id=product1.id, clerk_id=clerk1.id, admin_id=admin1.id, store_id=store1.id)
+        request2 = Request(description="Request 2", product_id=product2.id, clerk_id=clerk1.id, admin_id=admin2.id, store_id=store2.id)
 
         db.session.add_all([request1, request2])
         db.session.commit()
@@ -81,6 +81,7 @@ def seed_data():
             date=datetime.now(),
             product_id=product1.id,
             product_name=product1.product_name,
+            store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=90,
             profit=500.0
@@ -89,6 +90,7 @@ def seed_data():
             date=datetime.now(),
             product_id=product2.id,
             product_name=product2.product_name,
+            store_id=store2.id,
             quantity_sold=5,
             quantity_in_hand=45,
             profit=250.0

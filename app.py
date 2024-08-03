@@ -24,11 +24,12 @@ def user_lookup_callback(_jwt_header, jwt_data):
 class SignUp(Resource):
     def post(self):
         data = request.get_json()
-        name = data.get("name")
+        name = data.get("full_name")
         email = data.get("email")
         role = data.get("role")
         store_id = data.get("store_id")
         password = data.get("password")
+        phone_number = data.get("phone_number")
 
         user = User.query.filter_by(email=email).first()
 
@@ -38,7 +39,8 @@ class SignUp(Resource):
                     username = name,
                     email = email,
                     role = role,
-                    store_id = store_id
+                    store_id = store_id,
+                    phone_number = phone_number
 
                 )
                 user.password_hash = password
@@ -63,6 +65,7 @@ class Login(Resource):
         data = request.get_json()
         user = User.query.filter_by(email = data.get("email")).first()
         if user:
+            username = data.get("full_name")
             if user.verify_password(data.get("password")):
                 access_token = create_access_token(identity=user)
                 response = make_response({"user":user.to_dict(),"access_token":access_token},201)
@@ -84,25 +87,28 @@ api.add_resource(CheckSession,'/check_session',endpoint="check_session")
 
 
 
-class GetItem(Resource):
+class GetSpecificStoreProducts(Resource):
     def get(self,store_id):
         products = Product.query.filter_by(store_id=store_id).all()
         response = make_response([product.to_dict() for product in products],200)
         return response
     
-api.add_resource(GetItem,"/getItemssale/<int:store_id>")
+api.add_resource(GetSpecificStoreProducts,"/getProducts/<int:store_id>")
+
+
 
 class Sales(Resource):
-    def get(self):
-        sales = SalesReport.query.all()
+    def get(self,store_id):
+        sales = SalesReport.query.filter_by(store_id=store_id).all()
         response = make_response({"sales":[sale.to_dict() for sale in sales]},200)
         return response
     
-    def post(self):
+    def post(self,store_id):
         data = request.get_json()
         date = data.get("date")
         item = data.get("product_name")
         quantity = data.get("quantity")
+        total_price = data.get("total_price")
 
         product = Product.query.filter_by(product_name = item).first()
         print(item)
@@ -116,6 +122,7 @@ class Sales(Resource):
                         product_id = product.id,
                         quantity_sold = quantity,
                         quantity_in_hand = product.closing_stock - quantity,
+                        store_id = store_id,
                         profit = (product.selling_price * quantity) - (product.buying_price * quantity)
                     )
                     product.closing_stock -= quantity
@@ -133,7 +140,9 @@ class Sales(Resource):
             return make_response({"error":"Product not found"},404)
         
 
-api.add_resource(Sales,"/sales")
+api.add_resource(Sales,"/sales/<int:store_id>")
+
+
 
 """To be reviewed"""
 class Requests(Resource):
@@ -173,7 +182,7 @@ class Requests(Resource):
       
 
     
-api.add_resource(Requests,"/request/<int:store_id>")
+api.add_resource(Requests,"/requests/<int:store_id>")
 
 
 
