@@ -1,4 +1,4 @@
-from models import User,Request,Product,Store
+from models import User,Request,Product,Store,SalesReport
 from config import app,Resource,api,make_response,request,db
 
 
@@ -84,6 +84,71 @@ api.add_resource(CheckSession,'/check_session',endpoint="check_session")
 
 
 
+class GetItem(Resource):
+    def get(self,store_id):
+        products = Product.query.filter_by(store_id=store_id).all()
+        response = make_response([product.to_dict() for product in products],200)
+        return response
+    
+api.add_resource(GetItem,"/getItemssale/<int:store_id>")
+
+class Sales(Resource):
+    def get(self):
+        sales = SalesReport.query.all()
+        response = make_response({"sales":[sale.to_dict() for sale in sales]},200)
+        return response
+    
+    def post(self):
+        data = request.get_json()
+        date = data.get("date")
+        item = data.get("product_name")
+        quantity = data.get("quantity")
+
+        product = Product.query.filter_by(product_name = item).first()
+        print(item)
+        if product:
+            if product.closing_stock >= quantity:
+                try:
+                    
+                    sale = SalesReport(
+                        date = date,
+                        product_name = product.product_name,
+                        product_id = product.id,
+                        quantity_sold = quantity,
+                        quantity_in_hand = product.closing_stock - quantity,
+                        profit = (product.selling_price * quantity) - (product.buying_price * quantity)
+                    )
+                    product.closing_stock -= quantity
+                    db.session.add(product)
+                    db.session.add(sale)
+                    db.session.commit()
+                    return make_response({"message": "Sale recorded successfully", "product": product.to_dict(rules=("-salesReport",)),"salesReport":sale.to_dict()}, 200)
+                except Exception as e:
+                    db.session.rollback()
+                    return make_response({"error": str(e)}, 500)
+            else:
+                return make_response({"error":"Insufficient stock"},404)
+            
+        else:
+            return make_response({"error":"Product not found"},404)
+        
+
+api.add_resource(Sales,"/sales")
+
+"""To be reviewed"""
+class Requests(Resource):
+    def get(self,store_id):
+    
+        requests = Request.query.filter_by(store_id = store_id)
+        response = make_response([requestedItem.to_dict() for requestedItem in requests],200)
+        return response
+    
+    def post(self):
+        pass
+
+
+    
+api.add_resource(Requests,"/request/<int:store_id>")
 
 
 
