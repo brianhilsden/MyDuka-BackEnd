@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-load_dotenv
+load_dotenv()
 import os
 from flask_migrate import Migrate
 from flask import Flask
@@ -14,18 +14,17 @@ from flask_swagger_ui import get_swaggerui_blueprint
 app = Flask(__name__)
 CORS(app)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY') 
 db = SQLAlchemy()
 
 migrate = Migrate(app, db)
-db.init_app(app)
 bcrypt = Bcrypt(app)
 api = Api(app)
 
-
+db.init_app(app)
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
