@@ -17,6 +17,7 @@ flask-bcrypt = "*"
 flask-jwt-extended = "*"
 flask-swagger-ui = "*"
 sqlalchemy-serializer = "*"
+flask-testing = "*"
 
 [requires]
 python_full_version = "3.8.13"
