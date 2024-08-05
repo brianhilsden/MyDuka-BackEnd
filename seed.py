@@ -93,7 +93,7 @@ def seed_data():
             store_id=store2.id,
             quantity_sold=5,
             quantity_in_hand=45,
-            profit=250.0
+            profit=250.0        
         )
 
         db.session.add_all([sales_report1, sales_report2])

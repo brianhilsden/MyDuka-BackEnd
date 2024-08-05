@@ -9,7 +9,7 @@ class Store(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     location = db.Column(db.String)
-    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     admin = db.relationship('User', back_populates='admin_store', foreign_keys=[admin_id])
     clerks = db.relationship('User', back_populates='clerk_store', foreign_keys='User.store_id')
@@ -48,8 +48,8 @@ class Request(db.Model, SerializerMixin):
     description = db.Column(db.String,default="Products out of stock")
     quantity = db.Column(db.Integer)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
-    clerk_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    clerk_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    admin_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
     
 
