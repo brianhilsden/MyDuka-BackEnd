@@ -186,5 +186,44 @@ api.add_resource(Requests,"/requests/<int:store_id>")
 
 
 
+class PaymentStatus(Resource):
+
+    def get(self,id):
+        product = Product.query.filter_by(id=id).first()
+        if product:
+            product.payment_status = "Paid"
+            db.session.commit() 
+            response = make_response(product.to_dict(),200)
+            return response
+        
+
+api.add_resource(PaymentStatus,"/paymentStatus/<int:id>")
+
+
+class UserAccountStatus(Resource):
+    def get(self,id):
+        user = User.query.filter_by(id=id).first()
+        user.account_status = "inactive" if user.account_status == "active" else "active"
+        db.session.commit()
+
+        response = make_response({"message":f'Status changed to {user.account_status}'},200)
+        return response
+    
+    def delete(self,id):
+        user = User.query.filter_by(id=id).first()
+
+        db.session.delete(user)
+        db.session.commit() 
+        response = make_response({"message":"User deleted successfully"})
+        return response
+    
+
+api.add_resource(UserAccountStatus,"/accountStatus/<int:id>")
+        
+
+
+
+
+
 if __name__ == "__main__":
     app.run(port=5555,debug=True)
