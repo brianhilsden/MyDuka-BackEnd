@@ -1,4 +1,3 @@
-
 from models import Merchant, Admin, Clerk, Request, Product, Store, SalesReport
 from config import app, Resource, api, make_response, request, db
 
