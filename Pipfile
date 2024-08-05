@@ -19,6 +19,8 @@ flask-swagger-ui = "*"
 sqlalchemy-serializer = "*"
 pytest = "*"
 app = "*"
+flask-testing = "*"
+
 
 [requires]
 python_full_version = "3.8.13"
