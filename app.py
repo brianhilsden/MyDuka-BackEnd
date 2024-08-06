@@ -51,7 +51,7 @@ class SignUp(Resource):
                     phone_number=phone_number
                 )
                 user.password_hash = password
-
+                
                 db.session.add(user)
                 db.session.commit()
 
