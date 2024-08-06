@@ -183,6 +183,7 @@ class PaymentStatus(Resource):
 
 api.add_resource(PaymentStatus, "/paymentStatus/<int:id>")
 
+
 class UserAccountStatus(Resource):
     def get(self, id):
         user = current_user.query.filter_by(id=id).first()
@@ -205,12 +206,16 @@ api.add_resource(UserAccountStatus, "/accountStatus/<int:id>")
 class GetClerk(Resource):
     def get(self, store_id):
         store = Store.query.filter_by(id=store_id).first()
-        clerk = store.clerk
+        clerk = store.clerk[0]
+        print(clerk)
         if clerk:
             return make_response(clerk.to_dict(), 200)
         return make_response({"error": "Clerk not found"}, 404)
 
 api.add_resource(GetClerk, "/getClerk/<int:store_id>")
+
+
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

@@ -74,10 +74,22 @@ def seed_data():
             spoilt_items=2,
             buying_price=100.0,
             selling_price=140.0,
-            store_id=store2.id
+            store_id=store1.id
+        )
+        product3 = Product(
+            brand_name="Brand Z",
+            product_name="Product Z",
+            availability=True,
+            payment_status="unpaid",
+            received_items=30,
+            closing_stock=25,
+            spoilt_items=2,
+            buying_price=150.0,
+            selling_price=180.0,
+            store_id=store1.id
         )
 
-        db.session.add_all([product1, product2])
+        db.session.add_all([product1, product2,product3])
         db.session.commit()
 
         # Create Requests
