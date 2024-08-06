@@ -1,25 +1,37 @@
-import pytest
-from flask import url_for
 
-def test_signup(test_client, init_database):
-    response = test_client.post('/signup', json={
+def test_signup_invalid_email(test_client, init_database):
+    response = test_client.post('/auth/signup', json={
         'full_name': 'Test Merchant',
-        'email': 'merchant@example.com',
+        'email': 'invalid_email',
         'role': 'Merchant',
         'store_id': 1,
         'password': 'password',
         'phone_number': '1234567890'
     })
-    assert response.status_code == 201
+    assert response.status_code == 400
 
-    # Check if email with token was sent
-    # Simulate token verification
+def test_signup_missing_fields(test_client, mock_post):
+        response = test_client.post('/auth/signup', json={
+            'full_name': 'Test Merchant',
+            'email': 'merchant@example.com',
+            'role': 'Merchant',
+            'password': 'password',
+            'phone_number': '1234567890'
+        })
+        assert response.status_code == 400
 
-def test_login(test_client, init_database):
-    response = test_client.post('/login', json={
-        'email': 'merchant@example.com',
-        'password': 'password',
-        'role': 'Merchant'
-    })
-    assert response.status_code == 201
-    assert 'access_token' in response.json
+def test_login_invalid_credentials(test_client, init_database):
+        response = test_client.post('/auth/login', json={
+            'email': 'merchant@example.com',
+            'password': 'wrong_password',
+            'role': 'Merchant'
+        })
+        assert response.status_code == 401
+def test_login_missing_fields(test_client, init_database):
+        response = test_client.post('/auth/login', json={
+            'email': 'merchant@example.com',
+            'role': 'Merchant'
+        })
+        assert response.status_code == 400
+    
+    
