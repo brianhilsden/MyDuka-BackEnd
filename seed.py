@@ -22,8 +22,8 @@ def seed_data():
         db.session.commit()
 
         # Create Merchants
-        merchant1 = Merchant(username="merchant1", email="merchant1@example.com", store_id=store1.id)
-        merchant2 = Merchant(username="merchant2", email="merchant2@example.com", store_id=store2.id)
+        merchant1 = Merchant(username="merchant1", email="merchant1@example.com", store_id=store1.id,role="Merchant")
+        merchant2 = Merchant(username="merchant2", email="merchant2@example.com", store_id=store2.id,role="Merchant")
 
         merchant1.password_hash = "merchantpassword1"
         merchant2.password_hash = "merchantpassword2"
@@ -32,8 +32,8 @@ def seed_data():
         db.session.commit()
 
         # Create Admins
-        admin1 = Admin(username="admin1", email="admin1@example.com", store_id=store1.id, role="manager")
-        admin2 = Admin(username="admin2", email="admin2@example.com", store_id=store2.id, role="manager")
+        admin1 = Admin(username="admin1", email="admin1@example.com", store_id=store1.id, role="Admin")
+        admin2 = Admin(username="admin2", email="admin2@example.com", store_id=store2.id, role="Admin")
 
         admin1.password_hash = "adminpassword1"
         admin2.password_hash = "adminpassword2"
@@ -42,8 +42,8 @@ def seed_data():
         db.session.commit()
 
         # Create Clerks
-        clerk1 = Clerk(username="clerk1", email="clerk1@example.com", store_id=store1.id, role="sales")
-        clerk2 = Clerk(username="clerk2", email="clerk2@example.com", store_id=store2.id, role="sales")
+        clerk1 = Clerk(username="clerk1", email="clerk1@example.com", store_id=store1.id, role="Clerk")
+        clerk2 = Clerk(username="clerk2", email="clerk2@example.com", store_id=store2.id, role="Clerk")
 
         clerk1.password_hash = "clerkpassword1"
         clerk2.password_hash = "clerkpassword2"
