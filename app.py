@@ -48,7 +48,7 @@ class SignUp(Resource):
                     username=name,
                     email=email,
                     store_id=store_id,
-                    phone_number=phone_number
+                   
                 )
                 user.password_hash = password
                 
@@ -152,7 +152,7 @@ class Requests(Resource):
         category = data.get("category")
 
         store = Store.query.filter_by(id=store_id).first()
-        admin_id = store.admin_id
+        
 
         if product:
             product_id = product.id
@@ -161,7 +161,6 @@ class Requests(Resource):
                 quantity=quantity,
                 product_id=product_id,
                 clerk_id=clerk_id,
-                admin_id=admin_id,
                 store_id=store_id
             )
             db.session.add(newRequest)
@@ -184,9 +183,10 @@ class PaymentStatus(Resource):
 api.add_resource(PaymentStatus, "/paymentStatus/<int:id>")
 
 
-class UserAccountStatus(Resource):
+class ClerkAccountStatus(Resource):
+
     def get(self, id):
-        user = current_user.query.filter_by(id=id).first()
+        user = Clerk.query.filter_by(id=id).first()
         if user:
             user.account_status = "inactive" if user.account_status == "active" else "active"
             db.session.commit()
@@ -194,25 +194,88 @@ class UserAccountStatus(Resource):
         return make_response({"error": "User not found"}, 404)
     
     def delete(self, id):
-        user = current_user.query.filter_by(id=id).first()
+        user = Clerk.query.filter_by(id=id).first()
         if user:
             db.session.delete(user)
             db.session.commit() 
             return make_response({"message": "User deleted successfully"}, 200)
         return make_response({"error": "User not found"}, 404)
 
-api.add_resource(UserAccountStatus, "/accountStatus/<int:id>")
+api.add_resource(ClerkAccountStatus, "/clerkAccountStatus/<int:id>")
 
-class GetClerk(Resource):
+class AdminAccountStatus(Resource):
+
+    def get(self, id):
+        user = Admin.query.filter_by(id=id).first()
+        if user:
+            user.account_status = "inactive" if user.account_status == "active" else "active"
+            db.session.commit()
+            return make_response({"message": f'Status changed to {user.account_status}'}, 200)
+        return make_response({"error": "User not found"}, 404)
+    
+    def delete(self, id):
+        user = Admin.query.filter_by(id=id).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit() 
+            return make_response({"message": "User deleted successfully"}, 200)
+        return make_response({"error": "User not found"}, 404)
+
+api.add_resource(AdminAccountStatus, "/adminAccountStatus/<int:id>")
+
+
+class AcceptRequests(Resource):
     def get(self, store_id):
-        store = Store.query.filter_by(id=store_id).first()
-        clerk = store.clerk[0]
-        print(clerk)
-        if clerk:
-            return make_response(clerk.to_dict(), 200)
-        return make_response({"error": "Clerk not found"}, 404)
+        requests = Request.query.filter_by(store_id=store_id).all()
+        
+        if not requests:
+            return make_response({"message": "No requests found for this store"}, 404)
+        
+        for request in requests:
+            product = Product.query.filter_by(id=request.product_id).first()
+            if product:
+                product.closing_stock += request.quantity
+            else:
+                product = Product(
+                    id=request.product_id,
+                    brand_name="Unknown",  
+                    product_name="Unknown",  
+                    availability=True,
+                    payment_status="Not Paid",  
+                    received_items=request.quantity,
+                    closing_stock=request.quantity,
+                    spoilt_items=0,
+                    buying_price=0.0,  
+                    selling_price=0.0,  
+                    store_id=store_id
+                )
+                db.session.add(product)
+            
+            db.session.commit()
+        
+        Request.query.filter_by(store_id=store_id).delete()
+        db.session.commit()
+        
+        return make_response({"message": "All requests have been accepted and processed"}, 200)
+    
+    def delete(self, store_id):
+        deleted_requests = Request.query.filter_by(store_id=store_id).delete()
+        db.session.commit()
+        
+        return make_response({"message": f"Deleted {deleted_requests} requests from the store"}, 200)
+    
+api.add_resource(AcceptRequests,"/acceptRequests/<int:store_id>")
 
-api.add_resource(GetClerk, "/getClerk/<int:store_id>")
+class getAdmins(Resource):
+    def get(self):
+        admins = Admin.query.all()
+
+        response = make_response([admin.to_dict() for admin in admins],200)
+        return response
+    
+api.add_resource(getAdmins,"/getAdmins")
+
+
 
 
 
