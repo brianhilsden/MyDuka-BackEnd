@@ -2,8 +2,20 @@ import unittest
 from config import app, db
 from models import Merchant, Admin, Clerk, Store, Product, Request, SalesReport
 
-
 class TestModels(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        app.config['TESTING'] = True
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+        cls.app = app.test_client()
+        with app.app_context():
+            db.create_all()
+
+    @classmethod
+    def tearDownClass(cls):
+        with app.app_context():
+            db.drop_all()
 
     def test_merchant_creation(self):
         with app.app_context():
