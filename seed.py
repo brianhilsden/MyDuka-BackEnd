@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,timedelta
 from config import db, app, bcrypt
 from models import Store, Product, Request, Merchant, Admin, Clerk, SalesReport
 
@@ -42,10 +42,10 @@ def seed_data():
         db.session.commit()
 
         # Create Clerks
-        clerk1 = Clerk(username="clerk1", email="clerk1@example.com", store_id=store1.id, role="Clerk")
+        clerk1 = Clerk(username="Grace", email="grace@gmail.com", store_id=store1.id, role="Clerk")
         clerk2 = Clerk(username="clerk2", email="clerk2@example.com", store_id=store2.id, role="Clerk")
 
-        clerk1.password_hash = "clerkpassword1"
+        clerk1.password_hash = "gracepassword"
         clerk2.password_hash = "clerkpassword2"
 
         db.session.add_all([clerk1, clerk2])
@@ -53,39 +53,39 @@ def seed_data():
 
         # Create Products
         product1 = Product(
-            brand_name="Brand X",
-            product_name="Product X",
+            brand_name="Pishori",
+            product_name="Rice",
             availability=True,
             payment_status="paid",
-            received_items=20,
+            received_items=10,
             closing_stock=15,
-            spoilt_items=1,
-            buying_price=150.0,
-            selling_price=200.0,
+            spoilt_items=10,
+            buying_price=121.0,
+            selling_price=150.0,
             store_id=store1.id
         )
         product2 = Product(
-            brand_name="Brand Y",
-            product_name="Product Y",
+            brand_name="Yellow",
+            product_name="Beans",
             availability=True,
             payment_status="unpaid",
-            received_items=30,
-            closing_stock=25,
-            spoilt_items=2,
-            buying_price=100.0,
-            selling_price=140.0,
+            received_items=45,
+            closing_stock=45,
+            spoilt_items=0,
+            buying_price=143.0,
+            selling_price=180.0,
             store_id=store1.id
         )
         product3 = Product(
-            brand_name="Brand Z",
-            product_name="Product Z",
+            brand_name="Butterfly Grains",
+            product_name="green grams",
             availability=True,
             payment_status="unpaid",
-            received_items=30,
-            closing_stock=25,
+            received_items=43,
+            closing_stock=10,
             spoilt_items=2,
-            buying_price=150.0,
-            selling_price=180.0,
+            buying_price=121.0,
+            selling_price=140.0,
             store_id=store1.id
         )
 
@@ -126,16 +126,79 @@ def seed_data():
             profit=250.0
         )
         sales_report2 = SalesReport(
-            date=datetime.now(),
+            date=datetime.now() - timedelta(days=1),
+            product_name=product1.product_name,
+            product_id=product1.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report3 = SalesReport(
+            date=datetime.now() - timedelta(days=2),
+            product_name=product1.product_name,
+            product_id=product1.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report4 = SalesReport(
+            date=datetime.now() - timedelta(days=3),
             product_name=product2.product_name,
             product_id=product2.id,
-            store_id=store2.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report5 = SalesReport(
+            date=datetime.now() - timedelta(days=4),
+            product_name=product2.product_name,
+            product_id=product2.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report6 = SalesReport(
+            date=datetime.now() - timedelta(days=5),
+            product_name=product2.product_name,
+            product_id=product2.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report7 = SalesReport(
+            date=datetime.now() - timedelta(days=6),
+            product_name=product3.product_name,
+            product_id=product3.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report8 = SalesReport(
+            date=datetime.now() - timedelta(days=7),
+            product_name=product3.product_name,
+            product_id=product3.id,
+            store_id=store1.id,
+            quantity_sold=10,
+            quantity_in_hand=15,
+            profit=400.0
+        )
+        sales_report9 = SalesReport(
+            date=datetime.now() - timedelta(days=8),
+            product_name=product3.product_name,
+            product_id=product3.id,
+            store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
             profit=400.0
         )
 
-        db.session.add_all([sales_report1, sales_report2])
+        db.session.add_all([sales_report1, sales_report2, sales_report3, sales_report4, sales_report5, sales_report6, sales_report7, sales_report8, sales_report9])
         db.session.commit()
 
 if __name__ == "__main__":
