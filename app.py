@@ -224,6 +224,18 @@ class AdminAccountStatus(Resource):
 api.add_resource(AdminAccountStatus, "/adminAccountStatus/<int:id>")
 
 
+class GetClerk(Resource):
+    def get(self, store_id):
+        store = Store.query.filter_by(id=store_id).first()
+        clerk = store.clerk[0]
+     
+        if clerk:
+            return make_response(clerk.to_dict(rules=("-store",)), 200)
+        return make_response({"error": "Clerk not found"}, 404)
+
+api.add_resource(GetClerk, "/getClerk/<int:store_id>")
+
+
 class AcceptRequests(Resource):
     def get(self, store_id):
         requests = Request.query.filter_by(store_id=store_id).all()
@@ -264,15 +276,16 @@ class AcceptRequests(Resource):
         
         return make_response({"message": f"Deleted {deleted_requests} requests from the store"}, 200)
     
-api.add_resource(AcceptRequests,"/acceptRequests/<int:store_id>")
+api.add_resource(AcceptRequests,"/acceptRequests    ")
+
 
 class getAdmins(Resource):
     def get(self):
         admins = Admin.query.all()
-
-        response = make_response([admin.to_dict() for admin in admins],200)
+        response = make_response([admin.to_dict(rules=("-requests","-store")) for admin in admins],200)
         return response
     
+
 api.add_resource(getAdmins,"/getAdmins")
 
 
