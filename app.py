@@ -9,7 +9,7 @@ jwt = JWTManager(app)
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return {"id": user.id, "role": user.__class__.__name__}
+    return {"id": user.id, "role": user.__class__.__name__} 
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -102,7 +102,7 @@ api.add_resource(GetSpecificStoreProducts, "/getProducts/<int:store_id>")
 
 class Sales(Resource):
     def get(self, store_id):
-        sales = SalesReport.query.filter_by(store_id=store_id).all()
+        sales = SalesReport.query.filter_by(store_id=store_id).order_by(SalesReport.date.desc()).all()
         return make_response({"sales": [sale.to_dict() for sale in sales]}, 200)
     
     def post(self, store_id):
