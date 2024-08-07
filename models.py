@@ -145,6 +145,7 @@ class Merchant(SerializerMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     email = db.Column(db.String)
+    role = db.Column(db.String)
     _password_hash = db.Column(db.String)
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
 
