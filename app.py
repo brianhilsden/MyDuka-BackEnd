@@ -95,6 +95,7 @@ api.add_resource(CheckSession, '/check_session', endpoint="check_session")
 class GetSpecificStoreProducts(Resource):
     def get(self, store_id):
         products = Product.query.filter_by(store_id=store_id).all()
+        print(products)
         return make_response([product.to_dict() for product in products], 200)
 
 api.add_resource(GetSpecificStoreProducts, "/getProducts/<int:store_id>")
@@ -210,7 +211,7 @@ class AdminAccountStatus(Resource):
         if user:
             user.account_status = "inactive" if user.account_status == "active" else "active"
             db.session.commit()
-            return make_response({"message": f'Status changed to {user.account_status}'}, 200)
+            return make_response({"status":user.account_status}, 200)
         return make_response({"error": "User not found"}, 404)
     
     def delete(self, id):
