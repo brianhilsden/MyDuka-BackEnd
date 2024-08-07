@@ -1,11 +1,8 @@
-
 import unittest
 from config import app, db
-from models import Merchant, Admin, Clerk, Store, Product, SalesReport, Request
-from unittest.mock import patch
+from models import Merchant, Store, Product, SalesReport, Request
+from unittest.mock import patch, MagicMock
 from flask import json
-
-
 
 class TestSignUp(unittest.TestCase):
 
@@ -105,8 +102,9 @@ class TestSignUp(unittest.TestCase):
         self.assertEqual(response.status_code, 422)
         self.assertIn('error', response.json)
 
+
 class TestLogin(unittest.TestCase):
-    
+
     @classmethod
     def setUpClass(cls):
         app.config['TESTING'] = True
@@ -121,23 +119,25 @@ class TestLogin(unittest.TestCase):
             db.drop_all()
 
     def test_login_success(self):
-        with patch('models.Merchant.query') as mock_query:
-            mock_user = mock_query.filter_by.return_value.first.return_value
-            mock_user.verify_password.return_value = True
+        with app.app_context():
+            with patch('models.Merchant.query.filter_by') as mock_query:
+                mock_user = MagicMock()
+                mock_user.verify_password.return_value = True
+                mock_query.return_value.first.return_value = mock_user
 
-            response = self.app.post(
-                '/login',
-                data=json.dumps({
-                    "email": "testmerchant@example.com",
-                    "role": "Merchant",
-                    "password": "password123"
-                }),
-                content_type='application/json'
-            )
+                response = self.app.post(
+                    '/login',
+                    data=json.dumps({
+                        "email": "testmerchant@example.com",
+                        "role": "Merchant",
+                        "password": "password123"
+                    }),
+                    content_type='application/json'
+                )
 
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('user', response.json)
-            self.assertIn('access_token', response.json)
+                self.assertEqual(response.status_code, 201)
+                self.assertIn('user', response.json)
+                self.assertIn('access_token', response.json)
 
     def test_login_invalid_role(self):
         response = self.app.post(
@@ -153,34 +153,19 @@ class TestLogin(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json['error'], 'Invalid role')
 
-    @patch('models.Merchant.query')
+    @patch('models.Merchant.query.filter_by')
     def test_login_invalid_credentials(self, mock_query):
-        mock_user = mock_query.filter_by.return_value.first.return_value
-        mock_user.verify_password.return_value = False
-
-        response = self.app.post(
-            '/login',
-            data=json.dumps({
-                "email": "testmerchant@example.com",
-                "role": "Merchant",
-                "password": "wrongpassword"
-            }),
-            content_type='application/json'
-        )
-
-        self.assertEqual(response.status_code, 401)
-        self.assertEqual(response.json['error'], 'Unauthorized')
-
-    def test_login_user_not_found(self):
-        with patch('models.Merchant.query') as mock_query:
-            mock_query.filter_by.return_value.first.return_value = None
+        with app.app_context():
+            mock_user = MagicMock()
+            mock_user.verify_password.return_value = False
+            mock_query.return_value.first.return_value = mock_user
 
             response = self.app.post(
                 '/login',
                 data=json.dumps({
-                    "email": "nonexistent@example.com",
+                    "email": "testmerchant@example.com",
                     "role": "Merchant",
-                    "password": "password123"
+                    "password": "wrongpassword"
                 }),
                 content_type='application/json'
             )
@@ -188,6 +173,23 @@ class TestLogin(unittest.TestCase):
             self.assertEqual(response.status_code, 401)
             self.assertEqual(response.json['error'], 'Unauthorized')
 
+    def test_login_user_not_found(self):
+        with app.app_context():
+            with patch('models.Merchant.query.filter_by') as mock_query:
+                mock_query.return_value.first.return_value = None
+
+                response = self.app.post(
+                    '/login',
+                    data=json.dumps({
+                        "email": "nonexistent@example.com",
+                        "role": "Merchant",
+                        "password": "password123"
+                    }),
+                    content_type='application/json'
+                )
+
+                self.assertEqual(response.status_code, 401)
+                self.assertEqual(response.json['error'], 'Unauthorized')
 
 
 class TestSales(unittest.TestCase):
@@ -211,51 +213,52 @@ class TestSales(unittest.TestCase):
             db.session.add(store)
             db.session.commit()
 
-            product = Product(product_name="Test Product", store_id=store.id, closing_stock=10, buying_price=5.0, selling_price=10.0)
+            product = Product(product_name="Test Product", store_id=store.id, closing_stock=10, buying_price=5.0, selling_price=10.0, brand_name="Test Brand")
             db.session.add(product)
             db.session.commit()
 
     def test_sale_recorded_successfully(self):
-        response = self.app.post(
-            '/sales/1',
-            data=json.dumps({
-                "date": "2022-01-01",
-                "product_name": "Test Product",
-                "quantity": 2,
-                "total_price": 20.0
-            }),
-            content_type='application/json'
-        )
+        with app.app_context():
+            response = self.app.post(
+                '/sales/1',
+                data=json.dumps({
+                    "date": "2022-01-01",
+                    "product_name": "Test Product",
+                    "quantity": 2,
+                    "total_price": 20.0
+                }),
+                content_type='application/json'
+            )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn('message', response.json)
-        self.assertIn('product', response.json)
-        self.assertIn('salesReport', response.json)
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('message', response.json)
+            self.assertIn('product', response.json)
+            self.assertIn('salesReport', response.json)
 
-        product = Product.query.filter_by(product_name="Test Product").first()
-        sales_report = SalesReport.query.filter_by(product_id=product.id).first()
+            product = Product.query.filter_by(product_name="Test Product").first()
+            sales_report = SalesReport.query.filter_by(product_id=product.id).first()
 
-        self.assertEqual(product.closing_stock, 8)
-        self.assertEqual(sales_report.date, "2022-01-01")
-        self.assertEqual(sales_report.quantity_sold, 2)
-        self.assertEqual(sales_report.quantity_in_hand, 8)
-        self.assertEqual(sales_report.profit, 10.0)
+            self.assertEqual(product.closing_stock, 8)
+            self.assertEqual(sales_report.date, "2022-01-01")
+            self.assertEqual(sales_report.quantity_sold, 2)
+            self.assertEqual(sales_report.quantity_in_hand, 8)
+            self.assertEqual(sales_report.profit, 10.0)
 
     def test_insufficient_stock(self):
-        response = self.app.post(
-            '/sales/1',
-            data=json.dumps({
-                "date": "2022-01-01",
-                "product_name": "Test Product",
-                "quantity": 20,
-                "total_price": 200.0
-            }),
-            content_type='application/json'
-        )
+        with app.app_context():
+            response = self.app.post(
+                '/sales/1',
+                data=json.dumps({
+                    "date": "2022-01-01",
+                    "product_name": "Test Product",
+                    "quantity": 20,
+                    "total_price": 200.0
+                }),
+                content_type='application/json'
+            )
 
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json['error'], 'Insufficient stock')
-
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(response.json['error'], 'Insufficient stock')
 
 
 if __name__ == '__main__':
