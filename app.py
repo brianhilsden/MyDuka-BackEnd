@@ -48,7 +48,6 @@ class SignUp(Resource):
                     username=name,
                     email=email,
                     store_id=store_id,
-                   
                 )
                 user.password_hash = password
                 
