@@ -70,9 +70,10 @@ class Clerk(SerializerMixin,db.Model):
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
     role = db.Column(db.String)
 
-    store = db.relationship("Store",back_populates = "clerk")
+    store = db.relationship("Store",back_populates = "clerks")
     requests = db.relationship("Request",back_populates = "clerk")
-    serialize_rules=("-store.clerk","-requests.clerk")
+    salesReports = db.relationship("SalesReport", back_populates = "clerk")
+    serialize_rules=("-store.clerk","-requests.clerk","-salesReports.clerk")
 
 
     @hybrid_property
@@ -97,12 +98,12 @@ class Store(SerializerMixin,db.Model):
     
     merchant = db.relationship("Merchant",back_populates="stores")
     admin = db.relationship("Admin",back_populates="store") # Relationhip with admin
-    clerk = db.relationship("Clerk",back_populates="store") # Relationship with clerk
+    clerks = db.relationship("Clerk",back_populates="store") # Relationship with clerk
     products = db.relationship("Product",back_populates="store") # Relationship with product
     requests = db.relationship("Request",back_populates = "store") #Relationship with request
     salesReports = db.relationship("SalesReport",back_populates = "store") # Relationship with sales report
     
-    serialize_rules = ('-products.store', '-clerk.store', '-admin.store',"-merchant.store","-requests.store","-salesReports")
+    serialize_rules = ('-products.store', '-clerks.store', '-admin.store',"-merchant.store","-requests.store","-salesReports")
 
 
 class Product(db.Model,SerializerMixin):
@@ -145,7 +146,7 @@ class Request(db.Model,SerializerMixin):
     product = db.relationship('Product', back_populates='request')
     store = db.relationship("Store",back_populates="requests")
 
-    serialize_rules = ('-clerk', '-admin', '-product',"-store")
+    serialize_rules = ('-clerk.requests','-clerk.store', '-admin', '-product.request','-product.store','-product.salesReport',"-store")
 
 
 
@@ -156,14 +157,16 @@ class SalesReport(db.Model,SerializerMixin):
     product_name = db.Column(db.String)
     product_id = db.Column(db.Integer, db.ForeignKey("products.id"))
     store_id = db.Column(db.Integer, db.ForeignKey("stores.id"))
+    clerk_id = db.Column(db.Integer, db.ForeignKey("clerks.id"))
     quantity_sold = db.Column(db.Integer)
     quantity_in_hand = db.Column(db.Integer)
     profit = db.Column(db.Integer)
 
     product = db.relationship("Product",back_populates="salesReport")
     store = db.relationship("Store",back_populates="salesReports")
+    clerk = db.relationship("Clerk",back_populates="salesReports")
 
-    serialize_rules = ("-product","-store")
+    serialize_rules = ("-product","-store","-clerk")
 
 
 

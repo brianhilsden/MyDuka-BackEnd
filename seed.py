@@ -44,11 +44,13 @@ def seed_data():
         # Create Clerks
         clerk1 = Clerk(username="Grace", email="grace@gmail.com", store_id=store1.id, role="Clerk")
         clerk2 = Clerk(username="clerk2", email="clerk2@example.com", store_id=store2.id, role="Clerk")
+        clerk3 = Clerk(username="Tony", email="tony@gmail.com", store_id=store1.id, role="Clerk")
 
         clerk1.password_hash = "gracepassword"
         clerk2.password_hash = "clerkpassword2"
+        clerk3.password_hash = "tonypassword"
 
-        db.session.add_all([clerk1, clerk2])
+        db.session.add_all([clerk1, clerk2,clerk3])
         db.session.commit()
 
         # Create Products
@@ -123,7 +125,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=5,
             quantity_in_hand=10,
-            profit=250.0
+            profit=250.0,
+            clerk_id = clerk1.id
         )
         sales_report2 = SalesReport(
             date=datetime.now() - timedelta(days=1),
@@ -132,7 +135,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk2.id
         )
         sales_report3 = SalesReport(
             date=datetime.now() - timedelta(days=2),
@@ -141,7 +145,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk3.id
         )
         sales_report4 = SalesReport(
             date=datetime.now() - timedelta(days=3),
@@ -150,7 +155,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk1.id
         )
         sales_report5 = SalesReport(
             date=datetime.now() - timedelta(days=4),
@@ -159,7 +165,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk2.id
         )
         sales_report6 = SalesReport(
             date=datetime.now() - timedelta(days=5),
@@ -168,7 +175,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk3.id
         )
         sales_report7 = SalesReport(
             date=datetime.now() - timedelta(days=6),
@@ -177,7 +185,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk1.id
         )
         sales_report8 = SalesReport(
             date=datetime.now() - timedelta(days=7),
@@ -186,7 +195,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk2.id
         )
         sales_report9 = SalesReport(
             date=datetime.now() - timedelta(days=8),
@@ -195,7 +205,8 @@ def seed_data():
             store_id=store1.id,
             quantity_sold=10,
             quantity_in_hand=15,
-            profit=400.0
+            profit=400.0,
+            clerk_id = clerk3.id
         )
 
         db.session.add_all([sales_report1, sales_report2, sales_report3, sales_report4, sales_report5, sales_report6, sales_report7, sales_report8, sales_report9])
