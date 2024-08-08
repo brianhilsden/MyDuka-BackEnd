@@ -9,7 +9,7 @@ jwt = JWTManager(app)
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return {"id": user.id, "role": user.__class__.__name__}
+    return {"id": user.id, "role": user.__class__.__name__} 
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -94,13 +94,14 @@ api.add_resource(CheckSession, '/check_session', endpoint="check_session")
 class GetSpecificStoreProducts(Resource):
     def get(self, store_id):
         products = Product.query.filter_by(store_id=store_id).all()
+        print(products)
         return make_response([product.to_dict() for product in products], 200)
 
 api.add_resource(GetSpecificStoreProducts, "/getProducts/<int:store_id>")
 
 class Sales(Resource):
     def get(self, store_id):
-        sales = SalesReport.query.filter_by(store_id=store_id).all()
+        sales = SalesReport.query.filter_by(store_id=store_id).order_by(SalesReport.date.desc()).all()
         return make_response({"sales": [sale.to_dict() for sale in sales]}, 200)
     
     def post(self, store_id):
@@ -209,7 +210,7 @@ class AdminAccountStatus(Resource):
         if user:
             user.account_status = "inactive" if user.account_status == "active" else "active"
             db.session.commit()
-            return make_response({"message": f'Status changed to {user.account_status}'}, 200)
+            return make_response({"status":user.account_status}, 200)
         return make_response({"error": "User not found"}, 404)
     
     def delete(self, id):
@@ -221,6 +222,18 @@ class AdminAccountStatus(Resource):
         return make_response({"error": "User not found"}, 404)
 
 api.add_resource(AdminAccountStatus, "/adminAccountStatus/<int:id>")
+
+
+class GetClerk(Resource):
+    def get(self, store_id):
+        store = Store.query.filter_by(id=store_id).first()
+        clerk = store.clerk[0]
+     
+        if clerk:
+            return make_response(clerk.to_dict(rules=("-store",)), 200)
+        return make_response({"error": "Clerk not found"}, 404)
+
+api.add_resource(GetClerk, "/getClerk/<int:store_id>")
 
 
 class AcceptRequests(Resource):
@@ -263,15 +276,16 @@ class AcceptRequests(Resource):
         
         return make_response({"message": f"Deleted {deleted_requests} requests from the store"}, 200)
     
-api.add_resource(AcceptRequests,"/acceptRequests/<int:store_id>")
+api.add_resource(AcceptRequests,"/acceptRequests    ")
+
 
 class getAdmins(Resource):
     def get(self):
         admins = Admin.query.all()
-
-        response = make_response([admin.to_dict() for admin in admins],200)
+        response = make_response([admin.to_dict(rules=("-requests","-store")) for admin in admins],200)
         return response
     
+
 api.add_resource(getAdmins,"/getAdmins")
 
 
