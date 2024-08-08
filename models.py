@@ -11,11 +11,11 @@ class Merchant(SerializerMixin,db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String)
     _password_hash = db.Column(db.String)
-    store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
+    store_id = db.Column(db.Integer,db.ForeignKey("stores.id")) # Foreign key to store tables
 
-    stores = db.relationship("Store",back_populates="merchant")
+    stores = db.relationship("Store",back_populates="merchant") # Relationship with store
 
-    serialize_rules = ("-stores.merchant",)
+    serialize_rules = ("-stores.merchant",) # Serialization rules
 
     @hybrid_property
     def password_hash(self):
@@ -36,12 +36,12 @@ class Admin(SerializerMixin,db.Model):
     email = db.Column(db.String)
     _password_hash = db.Column(db.String)
     account_status = db.Column(db.String, default = "active")
-    store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
+    store_id = db.Column(db.Integer,db.ForeignKey("stores.id")) # Foreign key to store table
     role = db.Column(db.String)
-    store = db.relationship("Store",back_populates = "admin")
-    requests = db.relationship("Request",back_populates = "admin")
+    store = db.relationship("Store",back_populates = "admin") # Relationship with store
+    requests = db.relationship("Request",back_populates = "admin") # Relationship with request
 
-    serialize_rules = ("-store.admin","-requests.admin")
+    serialize_rules = ("-store.admin","-requests.admin") # Serialization rules
     
 
 
@@ -95,11 +95,11 @@ class Store(SerializerMixin,db.Model):
     location = db.Column(db.String)
     
     merchant = db.relationship("Merchant",back_populates="stores")
-    admin = db.relationship("Admin",back_populates="store")
-    clerk = db.relationship("Clerk",back_populates="store")
-    products = db.relationship("Product",back_populates="store")
-    requests = db.relationship("Request",back_populates = "store")
-    salesReports = db.relationship("SalesReport",back_populates = "store")
+    admin = db.relationship("Admin",back_populates="store") # Relationhip with admin
+    clerk = db.relationship("Clerk",back_populates="store") # Relationship with clerk
+    products = db.relationship("Product",back_populates="store") # Relationship with product
+    requests = db.relationship("Request",back_populates = "store") #Relationship with request
+    salesReports = db.relationship("SalesReport",back_populates = "store") # Relationship with sales report
     
     serialize_rules = ('-products.store', '-clerk.store', '-admin.store',"-merchant.store","-requests.store","-salesReports")
 
