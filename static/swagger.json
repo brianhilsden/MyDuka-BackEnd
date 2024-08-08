@@ -642,15 +642,15 @@
     },
     "/getClerk/{store_id}": {
       "get": {
-        "summary": "Get clerk for a store",
-        "description": "Retrieves the clerk associated with a specific store by store ID",
+        "summary": "Get clerks for a store",
+        "description": "Retrieves the clerks associated with a specific store by store ID",
         "operationId": "getStoreClerk",
         "parameters": [
           {
             "name": "store_id",
             "in": "path",
             "required": true,
-            "description": "ID of the store to retrieve the clerk for",
+            "description": "ID of the store to retrieve the clerks for",
             "schema": {
               "type": "integer",
               "example": 123
@@ -659,7 +659,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Clerk retrieved successfully",
+            "description": "Clerks retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -669,26 +669,26 @@
             }
           },
           "404": {
-            "description": "Clerk not found"
+            "description": "Clerks not found"
           }
         }
       }
     },
-    "/acceptRequests/{store_id}": {
+    "/acceptRequests/{clerk_id}": {
       "get": {
-        "summary": "Accept all requests for a specific store",
-        "description": "Retrieves all requests for the specified store, processes them by updating or creating products, and then deletes the requests.",
+        "summary": "Accept all requests for a specific clerk",
+        "description": "Retrieves all requests from the specified clerk, processes them by updating or creating products, and then deletes the requests.",
         "operationId": "acceptRequests",
         "parameters": [
           {
-            "name": "store_id",
+            "name": "clerk_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "example": 1
             },
-            "description": "The ID of the store for which requests should be accepted."
+            "description": "The ID of the clerk for which requests should be accepted."
           }
         ],
         "responses": {
@@ -709,7 +709,7 @@
             }
           },
           "404": {
-            "description": "No requests found for the specified store.",
+            "description": "No requests found for the specified clerk.",
             "content": {
               "application/json": {
                 "schema": {
@@ -727,19 +727,19 @@
         }
       },
       "delete": {
-        "summary": "Delete all requests for a specific store",
-        "description": "Deletes all requests for the specified store.",
+        "summary": "Delete all requests for a specific clerk",
+        "description": "Deletes all requests for the specified clerk.",
         "operationId": "deleteRequests",
         "parameters": [
           {
-            "name": "store_id",
+            "name": "clerk_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "example": 1
             },
-            "description": "The ID of the store for which requests should be deleted."
+            "description": "The ID of the clerk for which requests should be deleted."
           }
         ],
         "responses": {
@@ -752,7 +752,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Deleted X requests from the store."
+                      "example": "Deleted X requests from the clerk."
                     }
                   }
                 }
