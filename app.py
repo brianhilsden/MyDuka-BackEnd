@@ -175,7 +175,7 @@ class PaymentStatus(Resource):
     def get(self, id):
         product = Product.query.filter_by(id=id).first()
         if product:
-            product.payment_status = "Paid"
+            product.payment_status = "paid"
             db.session.commit() 
             return make_response(product.to_dict(), 200)
         return make_response({"error": "Product not found"}, 404)
