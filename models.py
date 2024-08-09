@@ -167,7 +167,7 @@ class SalesReport(db.Model,SerializerMixin):
     store = db.relationship("Store",back_populates="salesReports")
     clerk = db.relationship("Clerk",back_populates="salesReports")
 
-    serialize_rules = ("-product","-store","-clerk")
+    serialize_rules = ("-product","-store","-clerk.salesReports","-clerk.requests","-clerk.store")
 
 
 
