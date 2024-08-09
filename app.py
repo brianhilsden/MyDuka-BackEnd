@@ -227,21 +227,21 @@ api.add_resource(AdminAccountStatus, "/adminAccountStatus/<int:id>")
 class GetClerk(Resource):
     def get(self, store_id):
         store = Store.query.filter_by(id=store_id).first()
-        clerk = store.clerk[0]
+        clerks= store.clerks
      
-        if clerk:
-            return make_response(clerk.to_dict(rules=("-store",)), 200)
+        if clerks[0]:
+            return make_response([clerk.to_dict(rules=("-store",)) for clerk in clerks], 200)
         return make_response({"error": "Clerk not found"}, 404)
 
 api.add_resource(GetClerk, "/getClerk/<int:store_id>")
 
 
 class AcceptRequests(Resource):
-    def get(self, store_id):
-        requests = Request.query.filter_by(store_id=store_id).all()
+    def get(self, clerk_id):
+        requests = Request.query.filter_by(clerk_id=clerk_id).all()
         
         if not requests:
-            return make_response({"message": "No requests found for this store"}, 404)
+            return make_response({"message": "No requests found for this clerk"}, 404)
         
         for request in requests:
             product = Product.query.filter_by(id=request.product_id).first()
@@ -259,24 +259,24 @@ class AcceptRequests(Resource):
                     spoilt_items=0,
                     buying_price=0.0,  
                     selling_price=0.0,  
-                    store_id=store_id
+                    store_id=request.store_id
                 )
                 db.session.add(product)
             
             db.session.commit()
         
-        Request.query.filter_by(store_id=store_id).delete()
+        Request.query.filter_by(clerk_id=clerk_id).delete()
         db.session.commit()
         
         return make_response({"message": "All requests have been accepted and processed"}, 200)
     
-    def delete(self, store_id):
-        deleted_requests = Request.query.filter_by(store_id=store_id).delete()
+    def delete(self, clerk_id):
+        deleted_requests = Request.query.filter_by(clerk_id=clerk_id).delete()
         db.session.commit()
         
-        return make_response({"message": f"Deleted {deleted_requests} requests from the store"}, 200)
+        return make_response({"message": f"Deleted {deleted_requests} requests from the clerk"}, 200)
     
-api.add_resource(AcceptRequests,"/acceptRequests    ")
+api.add_resource(AcceptRequests,"/acceptRequests/<int:clerk_id>")
 
 
 class getAdmins(Resource):
