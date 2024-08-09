@@ -193,6 +193,7 @@ class TestLogin(unittest.TestCase):
 
 
 class TestSales(unittest.TestCase):
+    
 
     @classmethod
     def setUpClass(cls):
