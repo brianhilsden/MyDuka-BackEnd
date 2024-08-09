@@ -136,6 +136,7 @@ class Request(db.Model,SerializerMixin):
     description = db.Column(db.String,default="Products out of stock")
     quantity = db.Column(db.Integer)
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    status = db.Column(db.String,default="Pending")
     clerk_id = db.Column(db.Integer, db.ForeignKey('clerks.id'))
     admin_id = db.Column(db.Integer, db.ForeignKey('admins.id'))
     store_id = db.Column(db.Integer, db.ForeignKey('stores.id'))
