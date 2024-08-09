@@ -175,7 +175,7 @@ class PaymentStatus(Resource):
     def get(self, id):
         product = Product.query.filter_by(id=id).first()
         if product:
-            product.payment_status = "Paid"
+            product.payment_status = "paid"
             db.session.commit() 
             return make_response(product.to_dict(), 200)
         return make_response({"error": "Product not found"}, 404)
@@ -237,46 +237,48 @@ api.add_resource(GetClerk, "/getClerk/<int:store_id>")
 
 
 class AcceptRequests(Resource):
-    def get(self, clerk_id):
-        requests = Request.query.filter_by(clerk_id=clerk_id).all()
+    def get(self, id):
+        request = Request.query.filter_by(id=id).first() 
+        if not request:
+            return make_response({"message": "No such requests found"}, 404)
         
-        if not requests:
-            return make_response({"message": "No requests found for this clerk"}, 404)
         
-        for request in requests:
-            product = Product.query.filter_by(id=request.product_id).first()
-            if product:
-                product.closing_stock += request.quantity
-            else:
-                product = Product(
-                    id=request.product_id,
-                    brand_name="Unknown",  
-                    product_name="Unknown",  
-                    availability=True,
-                    payment_status="Not Paid",  
-                    received_items=request.quantity,
-                    closing_stock=request.quantity,
-                    spoilt_items=0,
-                    buying_price=0.0,  
-                    selling_price=0.0,  
-                    store_id=request.store_id
+        product = Product.query.filter_by(id=request.product_id).first()
+        if product:
+            product.closing_stock += request.quantity
+            request.status = "approved"
+            db.session.commit()
+        else:
+            product = Product(
+                id=request.product_id,
+                brand_name="Unknown",  
+                product_name="Unknown",  
+                availability=True,
+                payment_status="Not Paid",  
+                received_items=request.quantity,
+                closing_stock=request.quantity,
+                spoilt_items=0,
+                buying_price=0.0,  
+                selling_price=0.0,  
+                store_id=request.store_id
                 )
-                db.session.add(product)
+            db.session.add(product)
             
             db.session.commit()
         
-        Request.query.filter_by(clerk_id=clerk_id).delete()
+        Request.query.filter_by(id=id).delete()
         db.session.commit()
         
-        return make_response({"message": "All requests have been accepted and processed"}, 200)
+        return make_response({"message": "Request has been accepted and processed"}, 200)
     
-    def delete(self, clerk_id):
-        deleted_requests = Request.query.filter_by(clerk_id=clerk_id).delete()
+    def delete(self, id):
+        deleted_request = Request.query.filter_by(id=id).delete()
+        deleted_request.status = "declined"
         db.session.commit()
         
-        return make_response({"message": f"Deleted {deleted_requests} requests from the clerk"}, 200)
+        return make_response({"message": f"Deleted {deleted_request} request for the product"}, 200)
     
-api.add_resource(AcceptRequests,"/acceptRequests/<int:clerk_id>")
+api.add_resource(AcceptRequests,"/acceptRequests/<int:id>")
 
 
 class getAdmins(Resource):

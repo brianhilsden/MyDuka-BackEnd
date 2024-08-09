@@ -678,26 +678,26 @@
         }
       }
     },
-    "/acceptRequests/{clerk_id}": {
+    "/acceptRequests/{id}": {
       "get": {
-        "summary": "Accept all requests for a specific clerk",
-        "description": "Retrieves all requests from the specified clerk, processes them by updating or creating products, and then deletes the requests.",
+        "summary": "Accept a specific request",
+        "description": "Retrieves a request for a product and accepts it, incrementing the stock of the product",
         "operationId": "acceptRequests",
         "parameters": [
           {
-            "name": "clerk_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "example": 1
             },
-            "description": "The ID of the clerk for which requests should be accepted."
+            "description": "The ID of the request that should be accepted."
           }
         ],
         "responses": {
           "200": {
-            "description": "Requests have been successfully accepted and processed.",
+            "description": "Request has been successfully accepted and processed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -705,7 +705,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "All requests have been accepted and processed."
+                      "example": "Request accepted and processed."
                     }
                   }
                 }
@@ -713,7 +713,7 @@
             }
           },
           "404": {
-            "description": "No requests found for the specified clerk.",
+            "description": "No requests found.",
             "content": {
               "application/json": {
                 "schema": {
@@ -721,7 +721,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "No requests found for this store."
+                      "example": "No requests found."
                     }
                   }
                 }
@@ -731,24 +731,24 @@
         }
       },
       "delete": {
-        "summary": "Delete all requests for a specific clerk",
-        "description": "Deletes all requests for the specified clerk.",
+        "summary": "Delete the request",
+        "description": "Deletes the requests for the product.",
         "operationId": "deleteRequests",
         "parameters": [
           {
-            "name": "clerk_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "integer",
               "example": 1
             },
-            "description": "The ID of the clerk for which requests should be deleted."
+            "description": "The ID of the request being made."
           }
         ],
         "responses": {
           "200": {
-            "description": "Requests have been successfully deleted.",
+            "description": "Request has been successfully deleted.",
             "content": {
               "application/json": {
                 "schema": {
@@ -756,7 +756,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Deleted X requests from the clerk."
+                      "example": "Deleted the request for the product."
                     }
                   }
                 }

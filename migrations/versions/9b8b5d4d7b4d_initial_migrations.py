@@ -1,8 +1,8 @@
-"""initial migration
+"""initial migrations
 
-Revision ID: 13db61cb1721
+Revision ID: 9b8b5d4d7b4d
 Revises: 
-Create Date: 2024-08-08 20:48:02.028048
+Create Date: 2024-08-09 18:08:23.513126
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '13db61cb1721'
+revision = '9b8b5d4d7b4d'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -77,6 +77,7 @@ def upgrade():
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('quantity', sa.Integer(), nullable=True),
     sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.Column('status', sa.String(), nullable=True),
     sa.Column('clerk_id', sa.Integer(), nullable=True),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.Column('store_id', sa.Integer(), nullable=True),
@@ -92,9 +93,11 @@ def upgrade():
     sa.Column('product_name', sa.String(), nullable=True),
     sa.Column('product_id', sa.Integer(), nullable=True),
     sa.Column('store_id', sa.Integer(), nullable=True),
+    sa.Column('clerk_id', sa.Integer(), nullable=True),
     sa.Column('quantity_sold', sa.Integer(), nullable=True),
     sa.Column('quantity_in_hand', sa.Integer(), nullable=True),
     sa.Column('profit', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['clerk_id'], ['clerks.id'], ),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
     sa.ForeignKeyConstraint(['store_id'], ['stores.id'], ),
     sa.PrimaryKeyConstraint('id')
