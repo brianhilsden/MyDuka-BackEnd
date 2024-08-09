@@ -109,6 +109,7 @@ class Sales(Resource):
         date = data.get("date")
         item = data.get("product_name")
         quantity = data.get("quantity")
+        clerk_id = data.get("clerk_id")
         total_price = data.get("total_price")
 
         product = Product.query.filter_by(product_name=item).first()
@@ -121,6 +122,7 @@ class Sales(Resource):
                     quantity_sold=quantity,
                     quantity_in_hand=product.closing_stock - quantity,
                     store_id=store_id,
+                    clerk_id=clerk_id,
                     profit=(product.selling_price * quantity) - (product.buying_price * quantity)
                 )
                 product.closing_stock -= quantity
