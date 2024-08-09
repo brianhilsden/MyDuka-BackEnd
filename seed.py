@@ -109,7 +109,7 @@ def seed_data():
             description="Restock Product Y",
             quantity=15,
             product_id=product2.id,
-            clerk_id=clerk2.id,
+            clerk_id=clerk3.id,
             admin_id=admin1.id,
             store_id=store1.id
         )
@@ -123,9 +123,9 @@ def seed_data():
             product_name=product1.product_name,
             product_id=product1.id,
             store_id=store1.id,
-            quantity_sold=5,
-            quantity_in_hand=10,
-            profit=250.0,
+            quantity_sold=10,
+            quantity_in_hand=82,
+            profit=360.0,
             clerk_id = clerk1.id
         )
         sales_report2 = SalesReport(
@@ -133,9 +133,9 @@ def seed_data():
             product_name=product1.product_name,
             product_id=product1.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=15,
+            quantity_in_hand=67,
+            profit=300.0,
             clerk_id = clerk2.id
         )
         sales_report3 = SalesReport(
@@ -143,8 +143,8 @@ def seed_data():
             product_name=product1.product_name,
             product_id=product1.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
+            quantity_sold=20,
+            quantity_in_hand=47,
             profit=400.0,
             clerk_id = clerk3.id
         )
@@ -153,9 +153,9 @@ def seed_data():
             product_name=product2.product_name,
             product_id=product2.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=11,
+            quantity_in_hand=39,
+            profit=220.0,
             clerk_id = clerk1.id
         )
         sales_report5 = SalesReport(
@@ -163,19 +163,19 @@ def seed_data():
             product_name=product2.product_name,
             product_id=product2.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=13,
+            quantity_in_hand=2,
+            profit=260.0,
             clerk_id = clerk2.id
         )
         sales_report6 = SalesReport(
-            date=datetime.now() - timedelta(days=5),
+            date=datetime.now() - timedelta(days=5  ),
             product_name=product2.product_name,
             product_id=product2.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=16,
+            quantity_in_hand=10,
+            profit=320.0,
             clerk_id = clerk3.id
         )
         sales_report7 = SalesReport(
@@ -183,9 +183,9 @@ def seed_data():
             product_name=product3.product_name,
             product_id=product3.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=15,
+            quantity_in_hand=35,
+            profit=300.0,
             clerk_id = clerk1.id
         )
         sales_report8 = SalesReport(
@@ -193,9 +193,9 @@ def seed_data():
             product_name=product3.product_name,
             product_id=product3.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=18,
+            quantity_in_hand=17,
+            profit=360.0,
             clerk_id = clerk2.id
         )
         sales_report9 = SalesReport(
@@ -203,9 +203,9 @@ def seed_data():
             product_name=product3.product_name,
             product_id=product3.id,
             store_id=store1.id,
-            quantity_sold=10,
-            quantity_in_hand=15,
-            profit=400.0,
+            quantity_sold=12,
+            quantity_in_hand=5,
+            profit=240.0,
             clerk_id = clerk3.id
         )
 
