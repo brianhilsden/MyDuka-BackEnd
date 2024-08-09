@@ -22,6 +22,7 @@ app = "*"
 flask-testing = "*"
 requests = "*"
 importlib-resources = "*"
+pytest-xdist = "*"
 
 [requires]
 python_full_version = "3.8.13"
