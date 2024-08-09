@@ -110,8 +110,8 @@ def seed_data():
             quantity=15,
             product_id=product2.id,
             clerk_id=clerk2.id,
-            admin_id=admin2.id,
-            store_id=store2.id
+            admin_id=admin1.id,
+            store_id=store1.id
         )
 
         db.session.add_all([request1, request2])
