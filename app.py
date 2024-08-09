@@ -276,7 +276,7 @@ class AcceptRequests(Resource):
         
         return make_response({"message": f"Deleted {deleted_request} requests from the clerk"}, 200)
     
-api.add_resource(AcceptRequests,"/acceptRequests/id")
+api.add_resource(AcceptRequests,"/acceptRequests/<int:id>")
 
 
 class getAdmins(Resource):
