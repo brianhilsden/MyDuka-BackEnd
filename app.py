@@ -238,8 +238,7 @@ api.add_resource(GetClerk, "/getClerk/<int:store_id>")
 
 class AcceptRequests(Resource):
     def get(self, id):
-        request = Request.query.filter_by(id=id).first()
-        
+        request = Request.query.filter_by(id=id).first() 
         if not request:
             return make_response({"message": "No such requests found"}, 404)
         
@@ -247,6 +246,8 @@ class AcceptRequests(Resource):
         product = Product.query.filter_by(id=request.product_id).first()
         if product:
             product.closing_stock += request.quantity
+            request.status = "approved"
+            db.session.commit()
         else:
             product = Product(
                 id=request.product_id,
@@ -268,13 +269,14 @@ class AcceptRequests(Resource):
         Request.query.filter_by(id=id).delete()
         db.session.commit()
         
-        return make_response({"message": "All requests have been accepted and processed"}, 200)
+        return make_response({"message": "Request has been accepted and processed"}, 200)
     
     def delete(self, id):
         deleted_request = Request.query.filter_by(id=id).delete()
+        deleted_request.status = "declined"
         db.session.commit()
         
-        return make_response({"message": f"Deleted {deleted_request} requests from the clerk"}, 200)
+        return make_response({"message": f"Deleted {deleted_request} request for the product"}, 200)
     
 api.add_resource(AcceptRequests,"/acceptRequests/<int:id>")
 
