@@ -126,7 +126,7 @@ def seed_data():
             quantity_sold=10,
             quantity_in_hand=82,
             profit=360.0,
-            clerk_id = clerk1.id
+            clerk_id = clerk3.id
         )
         sales_report2 = SalesReport(
             date=datetime.now() - timedelta(days=1),
@@ -136,7 +136,7 @@ def seed_data():
             quantity_sold=15,
             quantity_in_hand=67,
             profit=300.0,
-            clerk_id = clerk2.id
+            clerk_id = clerk1.id
         )
         sales_report3 = SalesReport(
             date=datetime.now() - timedelta(days=2),
@@ -166,7 +166,7 @@ def seed_data():
             quantity_sold=13,
             quantity_in_hand=2,
             profit=260.0,
-            clerk_id = clerk2.id
+            clerk_id = clerk3.id
         )
         sales_report6 = SalesReport(
             date=datetime.now() - timedelta(days=5  ),
@@ -176,7 +176,7 @@ def seed_data():
             quantity_sold=16,
             quantity_in_hand=10,
             profit=320.0,
-            clerk_id = clerk3.id
+            clerk_id = clerk1.id
         )
         sales_report7 = SalesReport(
             date=datetime.now() - timedelta(days=6),
@@ -186,7 +186,7 @@ def seed_data():
             quantity_sold=15,
             quantity_in_hand=35,
             profit=300.0,
-            clerk_id = clerk1.id
+            clerk_id = clerk3.id
         )
         sales_report8 = SalesReport(
             date=datetime.now() - timedelta(days=7),
@@ -196,7 +196,7 @@ def seed_data():
             quantity_sold=18,
             quantity_in_hand=17,
             profit=360.0,
-            clerk_id = clerk2.id
+            clerk_id = clerk1.id
         )
         sales_report9 = SalesReport(
             date=datetime.now() - timedelta(days=8),

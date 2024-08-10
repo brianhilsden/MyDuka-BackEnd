@@ -6,6 +6,18 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, current_us
 app.config["JWT_SECRET_KEY"] = "b'Y\xf1Xz\x01\xad|eQ\x80t \xca\x1a\x10K'"  
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 jwt = JWTManager(app)
+from flask import Flask,jsonify, render_template,url_for
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+from flask_mail import Message, Mail
+
+import os
+
+
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
@@ -28,38 +40,35 @@ def user_lookup_callback(_jwt_header, jwt_data):
 
 class SignUp(Resource):
     def post(self):
+        token = request.json.get('token')
         data = request.get_json()
         name = data.get("full_name")
-        email = data.get("email")
-        role = data.get("role")
-        store_id = data.get("store_id")
         password = data.get("password")
         phone_number = data.get("phone_number")
 
-        user_class = {"Merchant": Merchant, "Admin": Admin, "Clerk": Clerk}.get(role)
-        if not user_class:
-            return make_response({"error": "Invalid role"}, 400)
+        try:
+            email = serializer.loads(token, salt='email-invite', max_age=86400)  # 1-day expiration
+        except:
+            return jsonify({'message': 'Invalid or expired token.'}), 400
+        
 
-        user = user_class.query.filter_by(email=email).first()
+        user = Admin.query.filter_by(invitation_token=token).first() or Clerk.query.filter_by(invitation_token=token).first()
 
         if not user:
-            try:
-                user = user_class(
-                    username=name,
-                    email=email,
-                    store_id=store_id,
-                )
-                user.password_hash = password
-                
-                db.session.add(user)
-                db.session.commit()
+            return jsonify({'message': 'Invalid or expired token.'}), 400
 
-                access_token = create_access_token(identity=user)
-                return make_response({"user": user.to_dict(), 'access_token': access_token}, 201)
-            except Exception as e:
-                return {"error": e.args}, 422
-        else:
-            return make_response({"error": "Email already registered, kindly log in"}, 401)
+        try:
+            user.username = name
+            user.account_status = "active"
+            user.password_hash = password
+                
+            db.session.commit()
+
+            access_token = create_access_token(identity=user)
+            return make_response({"user": user.to_dict(), 'access_token': access_token}, 201)
+        except Exception as e:
+            return {"error": e.args}, 422
+        
 
 api.add_resource(SignUp, "/signup")
 
@@ -291,6 +300,57 @@ class getAdmins(Resource):
     
 
 api.add_resource(getAdmins,"/getAdmins")
+
+class inviteAdmin(Resource):
+   def post(self):
+    admin_email = request.json.get('email')
+    store_id = request.json.get("store_id")
+
+    # Generate a token for the invitation
+    token = serializer.dumps(admin_email, salt='email-invite')
+ 
+
+    # Create a new Admin entry (or find existing by email)
+    admin = Admin.query.filter_by(email=admin_email).first()
+    if not admin:
+        admin = Admin(email=admin_email)
+        db.session.add(admin)
+
+    admin.invitation_token = token
+    admin.role = 'admin'  # Set the role as admin
+    admin.account_status = 'pending'  # Set account status as pending
+    admin.store_id = store_id
+    db.session.commit()
+
+    # Send the invitation email to the admin
+    invite_url = url_for('signup', token=token, _external=True)
+    msg = Message('Admin Sign Up Invitation', recipients=[admin_email])
+    msg.body = f"You've been invited to sign up as an admin. Please use the following link to sign up: {invite_url}"
+    mail.send(msg)
+    
+    return make_response({'message': 'Invitation sent to admin!'},200)
+   
+api.add_resource(inviteAdmin,"/inviteAdmin")
+   
+class ValidateToken(Resource):
+    def post():
+        token = request.json.get('token')
+        try:
+            email = serializer.loads(token, salt='email-invite', max_age=86400)  
+        except:
+            return jsonify({'valid': False, 'message': 'Invalid or expired token.'}), 400
+
+        # Find the user by token
+        user = Admin.query.filter_by(invitation_token=token).first() or Clerk.query.filter_by(invitation_token=token).first()
+        if user:
+            return make_response({'valid': True, 'email': user.email},200)
+        else:
+            return make_response({'valid': False, 'message': 'Invalid or expired token.'},400)
+        
+api.add_resource(ValidateToken,"/validate-token")
+
+        
+
 
 
 

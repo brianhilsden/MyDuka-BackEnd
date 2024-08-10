@@ -36,6 +36,7 @@ class Admin(SerializerMixin,db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String)
     _password_hash = db.Column(db.String)
+    invitation_token = db.Column(db.String, nullable=True)
     account_status = db.Column(db.String, default = "active")
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id")) # Foreign key to store table
     role = db.Column(db.String)
