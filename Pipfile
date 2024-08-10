@@ -22,6 +22,8 @@ app = "*"
 flask-testing = "*"
 requests = "*"
 importlib-resources = "*"
+flask-mail = "*"
+flask-mailman = "*"
 
 [requires]
 python_full_version = "3.8.13"

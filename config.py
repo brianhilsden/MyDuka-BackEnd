@@ -18,6 +18,18 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
 """ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' """
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = os.getenv('SECRET_KEY') 
+
+# Configure Flask-Mail
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = (
+    os.environ.get("MAIL_DEFAULT_SENDER_NAME"),
+    os.environ.get("MAIL_DEFAULT_SENDER_EMAIL")
+)
+
 db = SQLAlchemy()
 
 migrate = Migrate(app, db)
@@ -25,6 +37,7 @@ bcrypt = Bcrypt(app)
 api = Api(app)
 
 db.init_app(app)
+
 
 SWAGGER_URL = '/api/docs'  # URL for exposing Swagger UI (without trailing '/')
 API_URL = '/static/swagger.json'  # Our API url (can of course be a local resource)
