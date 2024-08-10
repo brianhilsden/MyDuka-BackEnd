@@ -317,7 +317,7 @@ class inviteAdmin(Resource):
         db.session.add(admin)
 
     admin.invitation_token = token
-    admin.role = 'admin'  # Set the role as admin
+    admin.role = 'Admin'  # Set the role as admin
     admin.account_status = 'pending'  # Set account status as pending
     admin.store_id = store_id
     db.session.commit()
@@ -332,6 +332,42 @@ class inviteAdmin(Resource):
     return make_response({'message': 'Invitation sent to admin!'},200)
    
 api.add_resource(inviteAdmin,"/inviteAdmin")
+
+
+
+
+class inviteClerk(Resource):
+    def post(self):
+        clerk_email = request.json.get('email')
+        store_id = request.json.get("store_id")
+
+        # Generate a token for the invitation
+        token = serializer.dumps(clerk_email, salt='email-invite')
+    
+
+        # Create a new Clerk entry (or find existing by email)
+        clerk = Admin.query.filter_by(email=clerk_email).first()
+        if not clerk:
+            clerk= Clerk(email=clerk_email)
+            db.session.add(clerk)
+
+        clerk.invitation_token = token
+        clerk.role = 'Clerk'  # Set the role as clerk
+        clerk.account_status = 'pending'  # Set account status as pending
+        clerk.store_id = store_id
+        db.session.commit()
+
+        # Send the invitation email to the clerk
+        invite_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/#/signup?token={token}"
+
+        msg = Message('Admin Sign Up Invitation', recipients=[clerk_email])
+        msg.body = f"You've been invited to sign up as a clerk. Please use the following link to sign up: {invite_url}"
+        mail.send(msg)
+        
+        return make_response({'message': 'Invitation sent to clerk!'},200)
+   
+api.add_resource(inviteClerk,"/inviteClerk")
+   
    
 class ValidateToken(Resource):
     def post(self):
