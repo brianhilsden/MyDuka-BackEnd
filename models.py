@@ -69,6 +69,7 @@ class Clerk(SerializerMixin,db.Model):
     _password_hash = db.Column(db.String)
     account_status = db.Column(db.String, default = "active")
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
+    invitation_token = db.Column(db.String, nullable=True)
     role = db.Column(db.String)
 
     store = db.relationship("Store",back_populates = "clerks")
