@@ -104,7 +104,7 @@ class Store(SerializerMixin,db.Model):
     requests = db.relationship("Request",back_populates = "store") #Relationship with request
     salesReports = db.relationship("SalesReport",back_populates = "store") # Relationship with sales report
     
-    serialize_rules = ('-products.store', '-clerks.store', '-admin.store',"-merchant.store","-requests.store","-salesReports")
+    serialize_rules = ('-products', '-clerks', '-admin',"-merchant","-requests","-salesReports")
 
 
 class Product(db.Model,SerializerMixin):

@@ -350,6 +350,12 @@ class ValidateToken(Resource):
 api.add_resource(ValidateToken,"/validate-token")
 
         
+class GetAllStores(Resource):
+    def get(self):
+        stores = Store.query.all()
+        return make_response([store.to_dict() for store in stores], 200)
+
+api.add_resource(GetAllStores, "/stores")
 
 
 
