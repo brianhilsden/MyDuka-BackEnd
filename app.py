@@ -49,13 +49,13 @@ class SignUp(Resource):
         try:
             email = serializer.loads(token, salt='email-invite', max_age=86400)  # 1-day expiration
         except:
-            return jsonify({'message': 'Invalid or expired token.'}), 400
+            return make_response({'message': 'Invalid or expired token.'},400)
         
 
         user = Admin.query.filter_by(invitation_token=token).first() or Clerk.query.filter_by(invitation_token=token).first()
 
         if not user:
-            return jsonify({'message': 'Invalid or expired token.'}), 400
+            return make_response({'message': 'Invalid or expired token.'},400)
 
         try:
             user.username = name
