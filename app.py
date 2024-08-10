@@ -334,7 +334,7 @@ class inviteAdmin(Resource):
 api.add_resource(inviteAdmin,"/inviteAdmin")
    
 class ValidateToken(Resource):
-    def post():
+    def post(self):
         token = request.json.get('token')
         try:
             email = serializer.loads(token, salt='email-invite', max_age=86400)  
