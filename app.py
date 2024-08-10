@@ -323,7 +323,8 @@ class inviteAdmin(Resource):
     db.session.commit()
 
     # Send the invitation email to the admin
-    invite_url = url_for('signup', token=token, _external=True)
+    invite_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/signup?token={token}"
+
     msg = Message('Admin Sign Up Invitation', recipients=[admin_email])
     msg.body = f"You've been invited to sign up as an admin. Please use the following link to sign up: {invite_url}"
     mail.send(msg)
