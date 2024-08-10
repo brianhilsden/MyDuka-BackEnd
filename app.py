@@ -360,7 +360,7 @@ class inviteClerk(Resource):
         # Send the invitation email to the clerk
         invite_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/#/signup?token={token}"
 
-        msg = Message('Admin Sign Up Invitation', recipients=[clerk_email])
+        msg = Message('Clerk Sign Up Invitation', recipients=[clerk_email])
         msg.body = f"You've been invited to sign up as a clerk. Please use the following link to sign up: {invite_url}"
         mail.send(msg)
         
