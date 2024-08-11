@@ -205,11 +205,7 @@ class Requests(Resource):
             db.session.add(newRequest)
             db.session.commit()
 
-            # Emit event to notify clients
-            broadcast_event('new-request', {
-                'store_id': store_id,
-                'request': newRequest.to_dict()
-            })
+            
             return make_response(newRequest.to_dict(), 201)
         else:
             return make_response({"error": "The product does not exist"}, 404)
