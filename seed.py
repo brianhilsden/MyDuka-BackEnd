@@ -10,27 +10,32 @@ def seed_data():
         db.session.query(Product).delete()
         db.session.query(Clerk).delete()
         db.session.query(Admin).delete()
-        db.session.query(Merchant).delete()
         db.session.query(Store).delete()
+        db.session.query(Merchant).delete()
+      
         db.session.commit()
 
-        # Create Stores
-        store1 = Store(name="Store A", location="Nairobi")
-        store2 = Store(name="Store B", location="Mombasa")
-
-        db.session.add_all([store1, store2])
-        db.session.commit()
 
         # Create Merchants
-        merchant1 = Merchant(username="merchant1", email="merchant1@example.com", store_id=store1.id,role="Merchant")
-        merchant2 = Merchant(username="merchant2", email="merchant2@example.com", store_id=store2.id,role="Merchant")
+        merchant1 = Merchant(username="merchant1", email="merchant1@example.com",role="Merchant")
+        
 
         merchant1.password_hash = "merchantpassword1"
-        merchant2.password_hash = "merchantpassword2"
+      
 
-        db.session.add_all([merchant1, merchant2])
+        db.session.add(merchant1)
         db.session.commit()
 
+
+        # Create Stores
+        store1 = Store(name="Store A", location="Nairobi",merchant_id=merchant1.id)
+        store2 = Store(name="Store B", location="Mombasa",merchant_id=merchant1.id)
+        store3 = Store(name="Store C", location="Kisumu",merchant_id=merchant1.id)
+
+        db.session.add_all([store1, store2,store3])
+        db.session.commit()
+
+      
         # Create Admins
         admin1 = Admin(username="admin1", email="admin1@example.com", store_id=store1.id, role="Admin")
         admin2 = Admin(username="admin2", email="admin2@example.com", store_id=store2.id, role="Admin")
@@ -43,7 +48,7 @@ def seed_data():
 
         # Create Clerks
         clerk1 = Clerk(username="Grace", email="grace@gmail.com", store_id=store1.id, role="Clerk")
-        clerk2 = Clerk(username="clerk2", email="clerk2@example.com", store_id=store2.id, role="Clerk")
+        clerk2 = Clerk(username="Simon", email="simon@gmail.com", store_id=store2.id, role="Clerk")
         clerk3 = Clerk(username="Tony", email="tony@gmail.com", store_id=store1.id, role="Clerk")
 
         clerk1.password_hash = "gracepassword"
