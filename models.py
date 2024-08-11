@@ -11,6 +11,7 @@ class Merchant(SerializerMixin,db.Model):
     username = db.Column(db.String)
     email = db.Column(db.String)
     role = db.Column(db.String)
+    phone_number = db.Column(db.String)
     _password_hash = db.Column(db.String)
    
 
@@ -35,6 +36,7 @@ class Admin(SerializerMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     email = db.Column(db.String)
+    phone_number = db.Column(db.String)
     _password_hash = db.Column(db.String)
     invitation_token = db.Column(db.String, nullable=True)
     account_status = db.Column(db.String, default = "active")
@@ -66,6 +68,7 @@ class Clerk(SerializerMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)
     email = db.Column(db.String)
+    phone_number = db.Column(db.String)
     _password_hash = db.Column(db.String)
     account_status = db.Column(db.String, default = "active")
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
