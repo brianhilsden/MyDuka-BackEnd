@@ -131,6 +131,7 @@ class Sales(Resource):
         product = Product.query.filter_by(product_name=item).first()
         if product and product.closing_stock >= quantity:
             try:
+                selling_price = total_price if total_price else product.selling_price * quantity
                 sale = SalesReport(
                     date=date,
                     product_name=product.product_name,
@@ -139,15 +140,15 @@ class Sales(Resource):
                     quantity_in_hand=product.closing_stock - quantity,
                     store_id=store_id,
                     clerk_id=clerk_id,
-                    profit=(product.selling_price * quantity) - (product.buying_price * quantity)
+                    profit=selling_price - (product.buying_price * quantity)
                 )
                 product.closing_stock -= quantity
                 db.session.add(product)
                 db.session.add(sale)
                 db.session.commit()
-                
-                
-             
+
+
+
                 return make_response({"message": "Sale recorded successfully", "product": product.to_dict(rules=("-salesReport",)), "salesReport": sale.to_dict()}, 200)
             except Exception as e:
                 db.session.rollback()
