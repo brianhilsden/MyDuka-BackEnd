@@ -22,12 +22,10 @@ app = "*"
 flask-testing = "*"
 requests = "*"
 importlib-resources = "*"
-
 flask-mail = "*"
 flask-mailman = "*"
-
 pytest-xdist = "*"
-
+flask-socketio = "*"
 
 [requires]
 python_full_version = "3.8.13"

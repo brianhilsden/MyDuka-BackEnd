@@ -10,11 +10,30 @@ from flask import Flask,jsonify
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
+from flask_socketio import SocketIO, emit
 
 
 
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+
+
+
+# Initialize SocketIO
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Use SocketIO for broadcasting events
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')
+
+def broadcast_event(event_name, data):
+    socketio.emit(event_name, data)
+
 
 
 
@@ -36,6 +55,9 @@ def user_lookup_callback(_jwt_header, jwt_data):
         return Clerk.query.filter_by(id=user_id).one_or_none()
     else:
         return None
+    
+
+
 
 class SignUp(Resource):
     def post(self):
@@ -138,6 +160,12 @@ class Sales(Resource):
                 db.session.add(product)
                 db.session.add(sale)
                 db.session.commit()
+
+                # Emit event to notify clients
+                broadcast_event('new-sale', {
+                    'store_id': store_id,
+                    'sale': sale.to_dict()
+                })
                 return make_response({"message": "Sale recorded successfully", "product": product.to_dict(rules=("-salesReport",)), "salesReport": sale.to_dict()}, 200)
             except Exception as e:
                 db.session.rollback()
@@ -146,8 +174,9 @@ class Sales(Resource):
             return make_response({"error": "Insufficient stock"}, 404)
         else:
             return make_response({"error": "Product not found"}, 404)
-
+        
 api.add_resource(Sales, "/sales/<int:store_id>")
+
 
 class Requests(Resource):
     def get(self, store_id):
@@ -163,7 +192,6 @@ class Requests(Resource):
         category = data.get("category")
 
         store = Store.query.filter_by(id=store_id).first()
-        
 
         if product:
             product_id = product.id
@@ -176,9 +204,16 @@ class Requests(Resource):
             )
             db.session.add(newRequest)
             db.session.commit()
+
+            # Emit event to notify clients
+            broadcast_event('new-request', {
+                'store_id': store_id,
+                'request': newRequest.to_dict()
+            })
             return make_response(newRequest.to_dict(), 201)
         else:
             return make_response({"error": "The product does not exist"}, 404)
+
 
 api.add_resource(Requests, "/requests/<int:store_id>")
 
