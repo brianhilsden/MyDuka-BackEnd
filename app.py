@@ -442,4 +442,4 @@ api.add_resource(GetAllStores, "/stores")
 
 
 if __name__ == "__main__":
-    app.run(port=5555, debug=True)
+    socketio.run(app)
