@@ -11,7 +11,6 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
 
-import os
 
 
 mail = Mail(app)
