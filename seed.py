@@ -213,4 +213,5 @@ def seed_data():
         db.session.commit()
 
 if __name__ == "__main__":
+
     seed_data()

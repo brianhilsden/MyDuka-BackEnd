@@ -1,6 +1,7 @@
 import unittest
-from config import app, db
-from models import Merchant, Admin, Clerk, Store, Product, Request, SalesReport
+from datetime import datetime
+from test_config import app, db
+from test_models import Merchant, Admin, Clerk, Store, Product, Request, SalesReport
 
 class TestModels(unittest.TestCase):
 
@@ -104,6 +105,8 @@ class TestModels(unittest.TestCase):
             self.assertEqual(retrieved_product.brand_name, "Brand X")
             self.assertEqual(retrieved_product.closing_stock, 15)
 
+   
+
     def test_request_creation(self):
         with app.app_context():
             store = Store(name="Test Store", location="Test Location")
@@ -135,8 +138,9 @@ class TestModels(unittest.TestCase):
             db.session.add(product)
             db.session.commit()
 
+            # Use datetime object instead of string
             request = Request(
-                date="2023-10-26",
+                date=datetime(2023, 10, 26),  # Use a datetime object here
                 description="Restock Product X",
                 quantity=10,
                 product_id=product.id,
@@ -151,6 +155,7 @@ class TestModels(unittest.TestCase):
             self.assertIsNotNone(retrieved_request)
             self.assertEqual(retrieved_request.quantity, 10)
             self.assertEqual(retrieved_request.product_id, product.id)
+
 
     def test_sales_report_creation(self):
         with app.app_context():
@@ -174,7 +179,7 @@ class TestModels(unittest.TestCase):
             db.session.commit()
 
             sales_report = SalesReport(
-                date="2023-10-26",
+                date=datetime(2023, 10, 26),
                 product_name="Product X",
                 product_id=product.id,
                 store_id=store.id,
