@@ -80,7 +80,7 @@ def seed_data():
         )
         product3 = Product(
             brand_name="Butterfly Grains",
-            product_name="green grams",
+            product_name="Green Grams",
             availability=True,
             payment_status="unpaid",
             received_items=43,
