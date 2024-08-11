@@ -6,7 +6,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, current_us
 app.config["JWT_SECRET_KEY"] = "b'Y\xf1Xz\x01\xad|eQ\x80t \xca\x1a\x10K'"  
 app.config['JWT_TOKEN_LOCATION'] = ['headers']
 jwt = JWTManager(app)
-from flask import Flask,jsonify, render_template,url_for
+from flask import Flask,jsonify
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
