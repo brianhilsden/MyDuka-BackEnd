@@ -26,6 +26,7 @@ flask-mail = "*"
 flask-mailman = "*"
 pytest-xdist = "*"
 flask-socketio = "*"
+flask-sse = "*"
 
 [requires]
 python_full_version = "3.8.13"
