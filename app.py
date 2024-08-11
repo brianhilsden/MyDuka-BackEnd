@@ -10,16 +10,14 @@ from flask import Flask,jsonify
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
-from flask_sse import sse   
-
-
-app.register_blueprint(sse, url_prefix='/stream')
+from flask_sse import sse
 
 
 
 
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+app.register_blueprint(sse, url_prefix='/stream')               
 
 
 
