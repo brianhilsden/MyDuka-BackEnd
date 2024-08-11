@@ -16,6 +16,8 @@ from flask_sse import sse
 app.register_blueprint(sse, url_prefix='/stream')
 
 
+
+
 mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
@@ -420,4 +422,4 @@ api.add_resource(GetAllStores, "/stores")
 
 
 if __name__ == "__main__":
-    app.run(app,debug=True)
+    app.run(debug=True)
