@@ -14,8 +14,8 @@ from flask_swagger_ui import get_swaggerui_blueprint
 app = Flask(__name__)
 CORS(app)
 
-
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URI')
+# test_config.py
+app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///test.db'
 
 """ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db' """
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -54,8 +54,3 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     }
 )
 app.register_blueprint(swaggerui_blueprint)
-
-
-
-
-

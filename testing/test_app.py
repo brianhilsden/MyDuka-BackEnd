@@ -1,5 +1,5 @@
-from models import Merchant, Admin, Clerk, Request, Product, Store, SalesReport
-from config import app, Resource, api, make_response, request, db
+from test_models import Merchant, Admin, Clerk, Request, Product, Store, SalesReport
+from test_config import app, Resource, api, make_response, request, db
 
 from flask_jwt_extended import create_access_token, get_jwt_identity, current_user, jwt_required, JWTManager
 
@@ -306,17 +306,20 @@ class inviteAdmin(Resource):
     admin_email = request.json.get('email')
     store_id = request.json.get("store_id")
 
-    
+    if not admin_email or not store_id:
+        return make_response({"error": "Both store_id and email are required"}, 400)
+
+    # Generate a token for the invitation
     token = serializer.dumps(admin_email, salt='email-invite')
- 
+
 
     # Create a new Admin entry (or find existing by email)
-    
+
     admin = Admin.query.filter_by(email=admin_email).first()
     if admin:
         return make_response({"error": "Unauthorized"}, 401)
 
-    
+
     if not admin:
         admin = Admin(email=admin_email)
         db.session.add(admin)
@@ -333,9 +336,9 @@ class inviteAdmin(Resource):
     msg = Message('Admin Sign Up Invitation', recipients=[admin_email])
     msg.body = f"You've been invited to sign up as an admin. Please use the following link to sign up: {invite_url}"
     mail.send(msg)
-    
+
     return make_response({'message': 'Invitation sent to admin!'},200)
-   
+
 api.add_resource(inviteAdmin,"/inviteAdmin")
 
 

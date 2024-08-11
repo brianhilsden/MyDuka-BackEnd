@@ -1,7 +1,6 @@
 import pytest
-from app import app, db
-from models import Merchant, Store, Product
-from config import bcrypt
+from test_models import Merchant, Store, Product
+from test_config import app,db,bcrypt
 
 @pytest.fixture(scope='module')
 def test_client():
