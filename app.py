@@ -171,7 +171,7 @@ class Requests(Resource):
         quantity = data.get("stock")
         clerk_id = data.get("clerk_id")
         price = data.get("product_price")
-        category = data.get("category")
+        brand_name = data.get("brand_name")
 
         store = Store.query.filter_by(id=store_id).first()
 
@@ -182,15 +182,40 @@ class Requests(Resource):
                 quantity=quantity,
                 product_id=product_id,
                 clerk_id=clerk_id,
-                store_id=store_id
+                store_id=store_id,
             )
             db.session.add(newRequest)
             db.session.commit()
 
-           
+
             return make_response(newRequest.to_dict(), 201)
         else:
-            return make_response({"error": "The product does not exist"}, 404)
+            new_product = Product(
+                product_name=data.get("product_name"),
+                brand_name=brand_name,
+                buying_price=price,
+                selling_price=price*1.5,
+                closing_stock=quantity,
+                received_items=quantity,
+                spoilt_items=0,
+                availability=True,
+                payment_status="unpaid",
+                store_id=store_id,
+            )
+
+            db.session.add(new_product)
+            db.session.commit()
+
+            newRequest = Request(
+                quantity=quantity,
+                product_id=new_product.id,
+                clerk_id=clerk_id,
+                store_id=store_id,
+            )
+            db.session.add(newRequest)
+            db.session.commit()
+
+            return make_response(newRequest.to_dict(), 201)
 
 
 api.add_resource(Requests, "/requests/<int:store_id>")
