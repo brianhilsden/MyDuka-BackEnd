@@ -194,8 +194,8 @@ class Requests(Resource):
             new_product = Product(
                 product_name=data.get("product_name"),
                 brand_name=brand_name,
-                buying_price=price,
-                selling_price=price*1.5,
+                buying_price=float(price),
+                selling_price=float(price)*1.5,
                 closing_stock=quantity,
                 received_items=quantity,
                 spoilt_items=0,
