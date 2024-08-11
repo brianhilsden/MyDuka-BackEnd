@@ -213,4 +213,6 @@ def seed_data():
         db.session.commit()
 
 if __name__ == "__main__":
+    print(app.config["SQLALCHEMY_DATABASE_URI"])
+
     seed_data()

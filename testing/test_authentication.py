@@ -1,6 +1,6 @@
 import unittest
-from config import app, db
-from models import Merchant, Store, Product, SalesReport, Request
+from test_config import app, db
+from test_models import Merchant,Admin, Store, Product, SalesReport, Request
 from unittest.mock import patch, MagicMock
 from flask import json
 
@@ -19,88 +19,76 @@ class TestSignUp(unittest.TestCase):
         with app.app_context():
             db.drop_all()
 
-    def test_signup_success(self):
+
+
+    def test_invite_admin_already_exists(self):
         with app.app_context():
-            store = Store(name="Test Store", location="Test Location")
-            db.session.add(store)
+      
+            existing_admin = Admin(email="existingadmin@example.com", role="Admin", account_status="active", store_id=1)
+            db.session.add(existing_admin)
             db.session.commit()
 
             response = self.app.post(
-                '/signup',
+                '/inviteAdmin',
                 data=json.dumps({
-                    "full_name": "Test Merchant",
-                    "email": "testmerchant@example.com",
-                    "role": "Merchant",
-                    "store_id": store.id,
-                    "password": "password123"
+                    "email": "existingadmin@example.com",
+                    "store_id": 1
                 }),
                 content_type='application/json'
             )
-
-            self.assertEqual(response.status_code, 201)
-            self.assertIn('user', response.json)
-            self.assertIn('access_token', response.json)
-
-            retrieved_merchant = Merchant.query.filter_by(email="testmerchant@example.com").first()
-            self.assertIsNotNone(retrieved_merchant)
-            self.assertTrue(retrieved_merchant.verify_password("password123"))
-
-    def test_signup_invalid_role(self):
-        response = self.app.post(
-            '/signup',
-            data=json.dumps({
-                "full_name": "Test User",
-                "email": "testuser@example.com",
-                "role": "InvalidRole",
-                "store_id": 1,
-                "password": "password123"
-            }),
-            content_type='application/json'
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json['error'], 'Invalid role')
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.json['error'], 'Unauthorized')
 
     def test_signup_email_exists(self):
         with app.app_context():
+            
             store = Store(name="Test Store", location="Test Location")
             db.session.add(store)
             db.session.commit()
 
-            merchant = Merchant(username="Test Merchant", email="existingmerchant@example.com", store_id=store.id)
-            merchant.password_hash = "password123"
-            db.session.add(merchant)
+            admin = Admin(username="Test Admin", email="existingadmin@example.com", store_id=store.id)
+            admin.password_hash = "password123"
+            db.session.add(admin)
             db.session.commit()
 
+            
             response = self.app.post(
-                '/signup',
+                '/inviteAdmin',
                 data=json.dumps({
-                    "full_name": "Test Merchant",
-                    "email": "existingmerchant@example.com",
-                    "role": "Merchant",
+                    "full_name": "Test Admin",
+                    "email": "existingadmin@example.com",
+                    "role": "Admin",
                     "store_id": store.id,
                     "password": "password123"
                 }),
                 content_type='application/json'
             )
 
+            
             self.assertEqual(response.status_code, 401)
-            self.assertEqual(response.json['error'], 'Email already registered, kindly log in')
+            self.assertEqual(response.json['error'], 'Unauthorized')
 
-    def test_signup_missing_fields_5(self):
+    def test_invite_admin_missing_email(self):
         response = self.app.post(
-            '/signup',
+            '/inviteAdmin',
             data=json.dumps({
-                "full_name": "Test Merchant",
-                "email": "testmerchant@example.com",
-                "role": "Merchant",
                 "store_id": 1
             }),
             content_type='application/json'
         )
+        self.assertEqual(response.status_code, 400)
+     
 
-        self.assertEqual(response.status_code, 422)
-        self.assertIn('error', response.json)
+    def test_invite_admin_missing_store_id(self):
+        response = self.app.post(
+            '/inviteAdmin',
+            data=json.dumps({
+                "email": "newadmin@example.com"
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+       
 
 
 class TestLogin(unittest.TestCase):

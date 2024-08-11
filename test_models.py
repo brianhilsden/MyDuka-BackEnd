@@ -1,4 +1,4 @@
-from config import db, bcrypt
+from test_config import db,bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime
@@ -39,7 +39,7 @@ class Admin(SerializerMixin,db.Model):
     invitation_token = db.Column(db.String, nullable=True)
     account_status = db.Column(db.String, default = "active")
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id")) # Foreign key to store table
-    role = db.Column(db.String,default = "Admin")
+    role = db.Column(db.String)
     store = db.relationship("Store",back_populates = "admin") # Relationship with store
     requests = db.relationship("Request",back_populates = "admin") # Relationship with request
 
@@ -70,7 +70,7 @@ class Clerk(SerializerMixin,db.Model):
     account_status = db.Column(db.String, default = "active")
     store_id = db.Column(db.Integer,db.ForeignKey("stores.id"))
     invitation_token = db.Column(db.String, nullable=True)
-    role = db.Column(db.String, default = "Clerk")
+    role = db.Column(db.String)
 
     store = db.relationship("Store",back_populates = "clerks")
     requests = db.relationship("Request",back_populates = "clerk")
