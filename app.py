@@ -67,6 +67,7 @@ class SignUp(Resource):
         try:
             user.username = name
             user.account_status = "active"
+            user.phone_number = phone_number
             user.password_hash = password
                 
             db.session.commit()
