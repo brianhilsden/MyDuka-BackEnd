@@ -13,6 +13,7 @@ from flask_mail import Message, Mail
 from flask_sse import sse   
 
 
+app.register_blueprint(sse, url_prefix='/stream')
 
 
 mail = Mail(app)
