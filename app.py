@@ -18,7 +18,7 @@ mail = Mail(app)
 serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
 
 
-
+""" 
 # Initialize SocketIO
 socketio = SocketIO(app, cors_allowed_origins="*")
 
@@ -34,7 +34,7 @@ def handle_disconnect():
 def broadcast_event(event_name, data):
     socketio.emit(event_name, data)
 
-
+ """
 
 
 @jwt.user_identity_loader
@@ -160,12 +160,12 @@ class Sales(Resource):
                 db.session.add(product)
                 db.session.add(sale)
                 db.session.commit()
-
+                """ 
                 # Emit event to notify clients
                 broadcast_event('new-sale', {
                     'store_id': store_id,
                     'sale': sale.to_dict()
-                })
+                }) """
                 return make_response({"message": "Sale recorded successfully", "product": product.to_dict(rules=("-salesReport",)), "salesReport": sale.to_dict()}, 200)
             except Exception as e:
                 db.session.rollback()
@@ -205,13 +205,18 @@ class Requests(Resource):
             db.session.add(newRequest)
             db.session.commit()
 
-            
+            """ # Emit event to notify clients
+            broadcast_event('new-request', {
+                'store_id': store_id,
+                'request': newRequest.to_dict()
+            }) """
             return make_response(newRequest.to_dict(), 201)
         else:
             return make_response({"error": "The product does not exist"}, 404)
 
 
 api.add_resource(Requests, "/requests/<int:store_id>")
+
 
 class PaymentStatus(Resource):
     def get(self, id):
