@@ -10,10 +10,7 @@ from flask import Flask,jsonify
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message, Mail
-from flask_sse import sse   
 
-
-app.register_blueprint(sse, url_prefix='/stream')
 
 
 
@@ -147,7 +144,7 @@ class Sales(Resource):
                 db.session.add(product)
                 db.session.add(sale)
                 db.session.commit()
-                sse.publish({"message": "Sale recorded", "sale": sale.to_dict()}, type='sales_update')
+               
                 
              
                 return make_response({"message": "Sale recorded successfully", "product": product.to_dict(rules=("-salesReport",)), "salesReport": sale.to_dict()}, 200)
