@@ -12,7 +12,7 @@ class Merchant(SerializerMixin,db.Model):
     email = db.Column(db.String)
     role = db.Column(db.String)
     _password_hash = db.Column(db.String)
-    store_id = db.Column(db.Integer,db.ForeignKey("stores.id")) # Foreign key to store tables
+   
 
     stores = db.relationship("Store",back_populates="merchant") # Relationship with store
 
@@ -97,6 +97,7 @@ class Store(SerializerMixin,db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     location = db.Column(db.String)
+    merchant_id = db.Column(db.Integer,db.ForeignKey("merchants.id"))
     
     merchant = db.relationship("Merchant",back_populates="stores")
     admin = db.relationship("Admin",back_populates="store") # Relationhip with admin
