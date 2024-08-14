@@ -1,5 +1,5 @@
 import pytest
-from test_models import Merchant, Store, Product
+from test_model import Merchant, Store, Product
 from test_config import app,db,bcrypt
 
 @pytest.fixture(scope='module')

@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime
 from test_config import app, db
-from test_models import Merchant, Admin, Clerk, Store, Product, Request, SalesReport
+from test_model import Merchant, Admin, Clerk, Store, Product, Request, SalesReport
 
 class TestModels(unittest.TestCase):
 
