@@ -216,6 +216,12 @@ class Requests(Resource):
             )
             db.session.add(newRequest)
             db.session.commit()
+            
+            admin = Admin.query.filter_by(store_id=store_id).first()
+            clerk = Clerk.query.filter_by(id=clerk_id).first()
+            msg = Message("Supply request", recipients=[admin.email])
+            msg.body = f"{clerk.username} has made a supply request for {product.product_name}.Log in to accept or reject it: https://brianhilsden.github.io/MyDuka-FrontEnd"
+            mail.send(msg)
 
             return make_response(newRequest.to_dict(), 201)
 
