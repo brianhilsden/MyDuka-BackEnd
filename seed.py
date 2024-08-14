@@ -17,10 +17,10 @@ def seed_data():
 
 
         # Create Merchants
-        merchant1 = Merchant(username="merchant1", email="merchant1@example.com",role="Merchant")
+        merchant1 = Merchant(username="Ryan", email="ryan@gmail.com",role="Merchant")
         
 
-        merchant1.password_hash = "merchantpassword1"
+        merchant1.password_hash = "ryanpassword"
       
 
         db.session.add(merchant1)
@@ -37,11 +37,11 @@ def seed_data():
 
       
         # Create Admins
-        admin1 = Admin(username="admin1", email="admin1@example.com", store_id=store1.id, role="Admin")
-        admin2 = Admin(username="admin2", email="admin2@example.com", store_id=store2.id, role="Admin")
+        admin1 = Admin(username="Carlson", email="carlson@gmail.com", store_id=store1.id, role="Admin")
+        admin2 = Admin(username="Michelle", email="michelle@gmail.com", store_id=store2.id, role="Admin")
 
-        admin1.password_hash = "adminpassword1"
-        admin2.password_hash = "adminpassword2"
+        admin1.password_hash = "carlsonpassword"
+        admin2.password_hash = "michellepassword"
 
         db.session.add_all([admin1, admin2])
         db.session.commit()
@@ -52,7 +52,7 @@ def seed_data():
         clerk3 = Clerk(username="Tony", email="tony@gmail.com", store_id=store1.id, role="Clerk")
 
         clerk1.password_hash = "gracepassword"
-        clerk2.password_hash = "clerkpassword2"
+        clerk2.password_hash = "simonpassword"
         clerk3.password_hash = "tonypassword"
 
         db.session.add_all([clerk1, clerk2,clerk3])
