@@ -445,14 +445,13 @@ class editProduct(Resource):
         data = request.get_json()
         product = Product.query.filter_by(id=id).first()
         if product:
-            
             if "buying_price" in data:
-                product.buying_price = data["buying_price"]
+                product.buying_price = float(data["buying_price"])
             if "selling_price" in data:
-                product.selling_price = data["selling_price"]
-            
+                product.selling_price = float(data["selling_price"])
+
             if "spoilt_items" in data:
-                product.spoilt_items = data["spoilt_items"]
+                product.spoilt_items = int(data["spoilt_items"])
             
             try:
                 db.session.commit()
