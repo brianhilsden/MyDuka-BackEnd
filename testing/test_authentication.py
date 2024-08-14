@@ -1,6 +1,6 @@
 import unittest
 from test_config import app, db
-from test_models import Merchant,Admin, Store, Product, SalesReport, Request
+from test_model import Merchant,Admin, Store, Product, SalesReport, Request
 from unittest.mock import patch, MagicMock
 from flask import json
 

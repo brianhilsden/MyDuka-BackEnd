@@ -1,4 +1,4 @@
-from test_models import Merchant, Admin, Clerk, Request, Product, Store, SalesReport
+from test_model import Merchant, Admin, Clerk, Request, Product, Store, SalesReport
 from test_config import app, Resource, api, make_response, request, db
 
 from flask_jwt_extended import create_access_token, get_jwt_identity, current_user, jwt_required, JWTManager
