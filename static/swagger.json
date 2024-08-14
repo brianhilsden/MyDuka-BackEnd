@@ -804,6 +804,184 @@
           }
         }
       }
+    },"/inviteAdmin": {
+      "post": {
+        "summary": "Invite an Admin",
+        "description": "Sends an invitation email to an admin with a sign-up link.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "admin@example.com"
+                },
+                "store_id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation sent to admin!"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/inviteClerk": {
+      "post": {
+        "summary": "Invite a Clerk",
+        "description": "Sends an invitation email to a clerk with a sign-up link.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "example": "clerk@example.com"
+                },
+                "store_id": {
+                  "type": "integer",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invitation sent to clerk!"
+          }
+        }
+      }
+    },
+    "/validate-token": {
+      "post": {
+        "summary": "Validate an Invitation Token",
+        "description": "Validates the invitation token to check if it is valid or expired.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "type": "string",
+                  "example": "sometoken"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token is valid",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "valid": {
+                  "type": "boolean"
+                },
+                "email": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or expired token"
+          }
+        }
+      }
+    },
+    "/stores": {
+      "get": {
+        "summary": "Get All Stores",
+        "description": "Fetches all stores from the database.",
+        "responses": {
+          "200": {
+            "description": "List of stores",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/updateProduct/{id}": {
+      "patch": {
+        "summary": "Edit a Product",
+        "description": "Updates the details of a product by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID of the product to update"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "buying_price": {
+                  "type": "number",
+                  "example": 150.00
+                },
+                "selling_price": {
+                  "type": "number",
+                  "example": 200.00
+                },
+                "spoilt_items": {
+                  "type": "integer",
+                  "example": 3
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product updated successfully"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
     }
   },
   "components": {
