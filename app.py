@@ -440,7 +440,28 @@ class GetAllStores(Resource):
 
 api.add_resource(GetAllStores, "/stores")
 
-
+class editProduct(Resource):
+    def patch(self, id):
+        data = request.get_json()
+        product = Product.query.filter_by(id=id).first()
+        if product:
+            
+            if "buying_price" in data:
+                product.buying_price = data["buying_price"]
+            if "selling_price" in data:
+                product.selling_price = data["selling_price"]
+            
+            if "spoilt_items" in data:
+                product.spoilt_items = data["spoilt_items"]
+            
+            try:
+                db.session.commit()
+                return make_response(product.to_dict(), 200)
+            except Exception as e:
+                return make_response({"error": str(e)}, 500)
+        return make_response({"error": "Product not found"}, 404)
+    
+api.add_resource(editProduct,"/updateProduct/<int:id>")
 
 
 
