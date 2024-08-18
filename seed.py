@@ -18,6 +18,7 @@ def seed_data():
         # Create Merchants
         merchant1 = Merchant(username="Ryan", email="ryan@gmail.com", role="Merchant")
         merchant1.password_hash = "ryanpassword"
+
         db.session.add(merchant1)
         db.session.commit()
 

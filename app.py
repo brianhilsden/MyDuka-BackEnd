@@ -328,7 +328,7 @@ class AcceptRequests(Resource):
                 brand_name="Unknown",  
                 product_name="Unknown",  
                 availability=True,
-                payment_status="Not Paid",  
+                payment_status="unpaid",  
                 received_items=request.quantity,
                 closing_stock=request.quantity,
                 spoilt_items=0,
@@ -483,6 +483,36 @@ class editProduct(Resource):
         return make_response({"error": "Product not found"}, 404)
     
 api.add_resource(editProduct,"/updateProduct/<int:id>")
+
+
+class addProduct(Resource):
+    def post(self,store_id):
+        data = request.get_json()
+        brand_name = data.get("brand_name")
+        product_name = data.get("product_name")
+        payment_status = "unpaid"
+        closing_stock = data.get("number_of_items")
+        buying_price = data.get("buying_price")
+        selling_price = data.get("selling_price")
+        store_id = store_id
+        
+
+        product = Product(
+                brand_name=brand_name,  
+                product_name=product_name,  
+                payment_status=payment_status,  
+                received_items=closing_stock,
+                closing_stock=closing_stock,
+                spoilt_items=0,
+                buying_price=buying_price,  
+                selling_price=selling_price,  
+                store_id=store_id
+                )
+        db.session.add(product)
+            
+        db.session.commit()
+
+api.add_resource(addProduct,'/addProduct/<int:store_id>')
 
 
 
