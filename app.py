@@ -514,6 +514,44 @@ class addProduct(Resource):
 
 api.add_resource(addProduct,'/addProduct/<int:store_id>')
 
+class editUser(Resource):
+    def patch(self,id):
+        data = request.get_json()
+        if data.get("role") == "Merchant":
+            user = Merchant.query.filter_by(id=id).first()
+            
+            for attr in data:
+                setattr(user,attr,data[attr])
+            db.session.add(user)
+            db.session.commit()
+
+            response = make_response(user.to_dict(),200,{"Content-Type":"application/json"})
+            return response
+        elif data.get("role") == "Admin":
+            user = Admin.query.filter_by(id=id).first()
+            for attr in data:
+                setattr(user,attr,data[attr])
+            db.session.add(user)
+            db.session.commit()
+
+            response = make_response(user.to_dict(),200,{"Content-Type":"application/json"})
+            return response
+
+        else:
+            user = Clerk.query.filter_by(id=id).first()
+            for attr in data:
+                setattr(user,attr,data[attr])
+            db.session.add(user)
+            db.session.commit()
+
+            response = make_response(user.to_dict(),200,{"Content-Type":"application/json"})
+            return response
+
+
+api.add_resource(editUser,"/editUser/<int:id>")
+
+        
+
 
 
 
