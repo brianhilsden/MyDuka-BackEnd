@@ -605,7 +605,7 @@ def reset_password_request():
     user = user_class.query.filter_by(email=email).first()
     if user:
         token = generate_reset_token(user.email)
-        reset_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/reset-password/{token}"
+        reset_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/#/reset-password/{token}"
         send_reset_email(user.email, reset_url)
         return jsonify({"message": "Check your email for the instructions to reset your password"}), 200
     return jsonify({"message": "No account found with that email"}), 404
