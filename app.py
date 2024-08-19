@@ -581,6 +581,70 @@ class addStore(Resource):
 api.add_resource(addStore,"/addStore")
 
 
+def generate_reset_token(email):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    return serializer.dumps(email, salt='password-reset-salt')
+
+def verify_reset_token(token, expiration=3600):
+    serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
+    try:
+        email = serializer.loads(token, salt='password-reset-salt', max_age=expiration)
+    except:
+        return None
+    return email
+
+@app.route('/api/reset_password_request', methods=['POST'])
+def reset_password_request():
+    data = request.get_json()
+    email = data.get('email')
+    role = data.get("role")
+    user_class = {"Merchant": Merchant, "Admin": Admin, "Clerk": Clerk}.get(role)
+    if not user_class:
+        return make_response({"error": "Invalid role"}, 400)
+
+    user = user_class.query.filter_by(email=email).first()
+    if user:
+        token = generate_reset_token(user.email)
+        reset_url = f"https://brianhilsden.github.io/MyDuka-FrontEnd/reset-password/{token}"
+        send_reset_email(user.email, reset_url)
+        return jsonify({"message": "Check your email for the instructions to reset your password"}), 200
+    return jsonify({"message": "No account found with that email"}), 404
+
+# API endpoint to handle the password reset
+@app.route('/api/reset_password/<token>', methods=['POST'])
+def reset_password(token):
+    email = verify_reset_token(token)
+    if not email:
+        return jsonify({"message": "The reset link is invalid or has expired."}), 400
+    
+    data = request.get_json()
+    new_password = data.get('password')
+    role = data.get("role")
+    user_class = {"Merchant": Merchant, "Admin": Admin, "Clerk": Clerk}.get(role)
+    if not user_class:
+        return make_response({"error": "Invalid role"}, 400)
+
+    user = user_class.query.filter_by(email=email).first()
+   
+    
+    if user:
+        user.password = new_password
+        db.session.commit()
+        return jsonify({"message": "Your password has been updated."}), 200
+    
+    return jsonify({"message": "User not found."}), 404
+
+
+def send_reset_email(to_email, reset_url):
+    msg = Message("Password Reset Request", recipients=[to_email])
+    msg.body = f'''To reset your password, visit the following link:
+{reset_url}
+
+If you did not make this request, simply ignore this email and no changes will be made.
+'''
+    mail.send(msg)
+
+
 
 
 if __name__ == "__main__":
