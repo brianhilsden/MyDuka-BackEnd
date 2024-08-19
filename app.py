@@ -511,6 +511,8 @@ class addProduct(Resource):
         db.session.add(product)
             
         db.session.commit()
+        response = make_response(product.to_dict(),201)
+        return response
 
 api.add_resource(addProduct,'/addProduct/<int:store_id>')
 
@@ -519,6 +521,7 @@ class editUser(Resource):
         data = request.get_json()
         if data.get("role") == "Merchant":
             user = Merchant.query.filter_by(id=id).first()
+            print("A")
             
             for attr in data:
                 setattr(user,attr,data[attr])
@@ -528,6 +531,7 @@ class editUser(Resource):
             response = make_response(user.to_dict(),200,{"Content-Type":"application/json"})
             return response
         elif data.get("role") == "Admin":
+            print("B")
             user = Admin.query.filter_by(id=id).first()
             for attr in data:
                 setattr(user,attr,data[attr])
@@ -538,6 +542,7 @@ class editUser(Resource):
             return response
 
         else:
+            print("C")
             user = Clerk.query.filter_by(id=id).first()
             for attr in data:
                 setattr(user,attr,data[attr])
@@ -550,8 +555,28 @@ class editUser(Resource):
 
 api.add_resource(editUser,"/editUser/<int:id>")
 
-        
 
+class addStore(Resource):
+    def post(self):
+        data = request.get_json()
+        name = data.get("name")
+        location = data.get("location")
+        merchant = Merchant.query.first()
+
+        store = Store(
+            name=name,
+            location=location,
+            merchant_id = merchant.id
+
+        )
+        db.session.add(store)
+        db.session.commit()
+
+
+        response = make_response(store.to_dict(),201)
+        return response
+    
+api.add_resource(addStore,"/addStore")
 
 
 
