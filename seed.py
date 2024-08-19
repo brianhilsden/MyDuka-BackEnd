@@ -16,7 +16,7 @@ def seed_data():
         db.session.commit()
 
         # Create Merchants
-        merchant1 = Merchant(username="Ryan", email="ryan@gmail.com", role="Merchant")
+        merchant1 = Merchant(username="Ryan", email="ryan@gmail.com", role="Merchant",profilePicture="https://images.unsplash.com/photo-1690687505782-b7cc62530e0e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
         merchant1.password_hash = "ryanpassword"
 
         db.session.add(merchant1)
@@ -30,17 +30,17 @@ def seed_data():
         db.session.commit()
 
         # Create Admins
-        admin1 = Admin(username="Carlson", email="carlson@gmail.com", store_id=store1.id, role="Admin")
-        admin2 = Admin(username="Michelle", email="michelle@gmail.com", store_id=store2.id, role="Admin")
+        admin1 = Admin(username="Carlson", email="carlson@gmail.com", store_id=store1.id, role="Admin",profilePicture="https://images.unsplash.com/photo-1691289435414-7301d7164319?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+        admin2 = Admin(username="Michelle", email="michelle@gmail.com", store_id=store2.id, role="Admin",profilePicture="https://images.unsplash.com/photo-1631291233907-413385492878?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
         admin1.password_hash = "carlsonpassword"
         admin2.password_hash = "michellepassword"
         db.session.add_all([admin1, admin2])
         db.session.commit()
 
         # Create Clerks
-        clerk1 = Clerk(username="Grace", email="grace@gmail.com", store_id=store1.id, role="Clerk")
-        clerk2 = Clerk(username="Simon", email="simon@gmail.com", store_id=store2.id, role="Clerk")
-        clerk3 = Clerk(username="Tony", email="tony@gmail.com", store_id=store1.id, role="Clerk")
+        clerk1 = Clerk(username="Grace", email="grace@gmail.com", store_id=store1.id, role="Clerk",profilePicture="https://images.unsplash.com/photo-1678468826224-886aaccd22eb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+        clerk2 = Clerk(username="Simon", email="simon@gmail.com", store_id=store2.id, role="Clerk",profilePicture="https://images.unsplash.com/photo-1678468826224-886aaccd22eb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
+        clerk3 = Clerk(username="Tony", email="tony@gmail.com", store_id=store1.id, role="Clerk",profilePicture="https://plus.unsplash.com/premium_photo-1723741320347-bf8a65518f8e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")
         clerk1.password_hash = "gracepassword"
         clerk2.password_hash = "simonpassword"
         clerk3.password_hash = "tonypassword"
