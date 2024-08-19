@@ -628,7 +628,7 @@ def reset_password(token):
    
     
     if user:
-        user.password = new_password
+        user.password_hash = new_password
         db.session.commit()
         return jsonify({"message": "Your password has been updated."}), 200
     
