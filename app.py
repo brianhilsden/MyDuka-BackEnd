@@ -51,6 +51,7 @@ class SignUp(Resource):
         name = data.get("full_name")
         password = data.get("password")
         phone_number = data.get("phone_number")
+        profilePicture = data.get("profilePicture")
 
         try:
             email = serializer.loads(token, salt='email-invite', max_age=86400)  # 1-day expiration
@@ -69,6 +70,7 @@ class SignUp(Resource):
             user.account_status = "active"
             user.phone_number = phone_number
             user.password_hash = password
+            user.profilePicture = profilePicture
                 
             db.session.commit()
 
